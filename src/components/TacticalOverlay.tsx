@@ -27,7 +27,11 @@ const FORMATIONS = [
   '4-1-4-1',
 ] as const;
 
-const MENTALITIES: Mentality[] = ['defensive', 'cautious', 'balanced', 'attacking', 'gung-ho'];
+const MENTALITIES: Array<'defensive' | 'balanced' | 'attacking'> = [
+  'defensive',
+  'balanced',
+  'attacking',
+];
 
 const PRESSING_INTENSITIES = ['low', 'medium', 'high'] as const;
 const PASSING_STYLES = ['short', 'mixed', 'long'] as const;
@@ -35,6 +39,16 @@ const WIDTHS = ['narrow', 'balanced', 'wide'] as const;
 const DEFENSIVE_LINES = ['low', 'medium', 'high'] as const;
 
 const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
+  isVisible,
+  onClose,
+  homeTeamId,
+  awayTeamId,
+  homePlayers,
+  awayPlayers,
+  currentTactics,
+  onTacticsChange,
+  onSubstitution,
+}) => {
   const { currentTeam } = useGame();
   const isHomeTeam = currentTeam?.id === homeTeamId;
   const [activeTab, setActiveTab] = useState<'tactics' | 'substitutions'>('tactics');
