@@ -203,6 +203,40 @@ export class Calendar {
     this.seasonStart = new Date(newSeasonStart);
     this.seasonEnd = new Date(newSeasonEnd);
   }
+
+  /**
+   * Serialize calendar to JSON
+   */
+  toJSON(): object {
+    return {
+      seasonStart: this.seasonStart.toISOString(),
+      seasonEnd: this.seasonEnd.toISOString(),
+      matches: this.matches,
+      teamAvailability: Array.from(this.teamAvailability.entries()).reduce(
+        (acc, [teamId, dates]) => {
+          acc[teamId] = Array.from(dates);
+          return acc;
+        },
+        {} as Record<number, string[]>
+      ),
+    };
+  }
+
+  /**
+   * Deserialize calendar from JSON data
+   */
+  static fromJSON(data: any): Calendar {
+    const calendar = new Calendar(data.seasonStart, data.seasonEnd);
+    if (data.matches) {
+      data.matches.forEach((match: Match) => calendar.matches.push(match));
+    }
+    if (data.teamAvailability) {
+      Object.entries(data.teamAvailability).forEach(([teamId, dates]) => {
+        calendar.teamAvailability.set(Number(teamId), new Set(dates as string[]));
+      });
+    }
+    return calendar;
+  }
 }
 
 export interface CalendarDay {

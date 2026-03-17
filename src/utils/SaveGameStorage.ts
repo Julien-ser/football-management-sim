@@ -52,7 +52,16 @@ export class SaveGameStorage {
       if (!serialized) {
         return null;
       }
-      return JSON.parse(serialized) as SavedGame;
+      const data = JSON.parse(serialized) as SavedGame;
+      // Reconstruct Calendar instance if present
+      if (
+        data.calendar &&
+        typeof data.calendar === 'object' &&
+        !(data.calendar instanceof Calendar)
+      ) {
+        data.calendar = Calendar.fromJSON(data.calendar);
+      }
+      return data;
     } catch (error) {
       console.error('Failed to load game:', error);
       return null;
@@ -140,7 +149,16 @@ export class SaveGameStorage {
       if (!serialized) {
         return null;
       }
-      return JSON.parse(serialized) as SavedGame;
+      const data = JSON.parse(serialized) as SavedGame;
+      // Reconstruct Calendar instance if present
+      if (
+        data.calendar &&
+        typeof data.calendar === 'object' &&
+        !(data.calendar instanceof Calendar)
+      ) {
+        data.calendar = Calendar.fromJSON(data.calendar);
+      }
+      return data;
     } catch (error) {
       console.error('Failed to load auto-save:', error);
       return null;
