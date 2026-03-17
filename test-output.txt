@@ -1,0 +1,186 @@
+
+> football-management-sim@0.1.0 test
+> jest --coverage --watchAll=false
+
+PASS src/transfer/Scout.additional.test.ts
+PASS src/transfer/TransferManager.test.ts
+PASS src/match/MatchSimulator.test.ts (5.325 s)
+PASS src/models.test.ts (5.175 s)
+PASS src/utils/SaveGameStorage.test.ts
+  ● Console
+
+    console.error
+      Failed to save game: Error: QuotaExceededError
+          at Object.localStorage.setItem (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:166:15)
+          at Function.setItem [as saveGame] (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.ts:37:20)
+          at Object.<anonymous> (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:169:38)
+          at Promise.then.completed (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:231:10)
+          at _callCircusTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:252:3)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:126:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at run (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:71:3)
+          at runAndTransformResultsToJestFormat (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+          at jestAdapter (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+          at runTestInternal (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:367:16)
+          at runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:444:34)
+          at Object.worker (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/testWorker.js:106:12)
+
+      38 |       return true;
+      39 |     } catch (error) {
+    > 40 |       console.error('Failed to save game:', error);
+         |               ^
+      41 |       return false;
+      42 |     }
+      43 |   }
+
+      at Function.error [as saveGame] (src/utils/SaveGameStorage.ts:40:15)
+      at Object.<anonymous> (src/utils/SaveGameStorage.test.ts:169:38)
+
+    console.error
+      Failed to load game: SyntaxError: Unexpected token 'i', "invalid json{" is not valid JSON
+          at JSON.parse (<anonymous>)
+          at Function.parse [as loadGame] (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.ts:55:25)
+          at Object.<anonymous> (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:200:38)
+          at Promise.then.completed (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:231:10)
+          at _callCircusTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:252:3)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:126:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at run (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:71:3)
+          at runAndTransformResultsToJestFormat (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+          at jestAdapter (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+          at runTestInternal (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:367:16)
+          at runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:444:34)
+          at Object.worker (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/testWorker.js:106:12)
+
+      64 |       return data;
+      65 |     } catch (error) {
+    > 66 |       console.error('Failed to load game:', error);
+         |               ^
+      67 |       return null;
+      68 |     }
+      69 |   }
+
+      at Function.error [as loadGame] (src/utils/SaveGameStorage.ts:66:15)
+      at Object.<anonymous> (src/utils/SaveGameStorage.test.ts:200:38)
+
+    console.error
+      Failed to delete save: Error: Storage failure
+          at Object.localStorage.removeItem (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:260:15)
+          at Function.removeItem (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.ts:99:20)
+          at Object.<anonymous> (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:263:38)
+          at Promise.then.completed (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:231:10)
+          at _callCircusTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:252:3)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:126:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at run (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:71:3)
+          at runAndTransformResultsToJestFormat (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+          at jestAdapter (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+          at runTestInternal (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:367:16)
+          at runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:444:34)
+          at Object.worker (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/testWorker.js:106:12)
+
+      100 |       return true;
+      101 |     } catch (error) {
+    > 102 |       console.error('Failed to delete save:', error);
+          |               ^
+      103 |       return false;
+      104 |     }
+      105 |   }
+
+      at Function.error [as deleteSave] (src/utils/SaveGameStorage.ts:102:15)
+      at Object.<anonymous> (src/utils/SaveGameStorage.test.ts:263:38)
+
+    console.error
+      Failed to delete auto-save: Error: Storage failure
+          at Object.localStorage.removeItem (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:346:15)
+          at Function.removeItem [as deleteAutoSave] (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.ts:180:20)
+          at Object.<anonymous> (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/src/utils/SaveGameStorage.test.ts:349:38)
+          at Promise.then.completed (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/utils.js:231:10)
+          at _callCircusTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:252:3)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:126:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at _runTestsForDescribeBlock (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:121:9)
+          at run (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/run.js:71:3)
+          at runAndTransformResultsToJestFormat (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+          at jestAdapter (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+          at runTestInternal (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:367:16)
+          at runTest (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/runTest.js:444:34)
+          at Object.worker (/home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/node_modules/jest-runner/build/testWorker.js:106:12)
+
+      181 |       return true;
+      182 |     } catch (error) {
+    > 183 |       console.error('Failed to delete auto-save:', error);
+          |               ^
+      184 |       return false;
+      185 |     }
+      186 |   }
+
+      at Function.error [as deleteAutoSave] (src/utils/SaveGameStorage.ts:183:15)
+      at Object.<anonymous> (src/utils/SaveGameStorage.test.ts:349:38)
+
+PASS src/match/TeamAI.test.ts
+PASS src/transfer/TransferAI.test.ts
+PASS src/competition/Calendar.test.ts
+PASS src/tactics/TacticsEditor.test.ts
+PASS src/tactics/TacticsEngine.test.ts
+PASS src/transfer/SquadRegistration.test.ts
+PASS src/transfer/Scout.test.ts
+PASS src/transfer/BudgetManager.test.ts
+PASS src/utils/SaveGameStorage.autoSave.test.ts
+PASS src/transfer/Negotiator.test.ts
+PASS src/transfer/TransferMarket.test.ts
+PASS src/utils.test.ts
+PASS src/transfer/TransferAI.workflow.test.ts
+-----------------------|---------|----------|---------|---------|---------------------------------------------------------
+File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                       
+-----------------------|---------|----------|---------|---------|---------------------------------------------------------
+All files              |   89.05 |    80.29 |   86.88 |   90.47 |                                                         
+ src                   |     100 |      100 |     100 |     100 |                                                         
+  utils.ts             |     100 |      100 |     100 |     100 |                                                         
+ src/competition       |   98.71 |    96.42 |     100 |   98.59 |                                                         
+  Calendar.ts          |   98.71 |    96.42 |     100 |   98.59 | 37                                                      
+ src/match             |   88.49 |    82.55 |   81.37 |   89.02 |                                                         
+  MatchSimulator.ts    |   86.31 |    80.58 |   74.62 |   87.08 | 153-275,357,363,449-451,479-481,578,708,819,862,899,938 
+  TeamAI.ts            |   95.04 |    90.38 |   93.75 |   94.64 | 124,146,149,167,174,176                                 
+  config.ts            |     100 |      100 |     100 |     100 |                                                         
+  events.ts            |     100 |      100 |     100 |     100 |                                                         
+ src/tactics           |   91.32 |    84.93 |   88.67 |   91.96 |                                                         
+  TacticsEditor.ts     |   87.35 |    73.68 |   85.18 |   88.09 | 84-88,224,263,268,271,274,297-301,315                   
+  TacticsEngine.ts     |   99.19 |      100 |      90 |   99.14 | 274                                                     
+  TacticsPresets.ts    |   79.62 |       50 |   93.75 |   81.25 | 250,254,271,289-295                                     
+ src/transfer          |   87.48 |     76.1 |   86.22 |   89.86 |                                                         
+  BudgetManager.ts     |   94.23 |      100 |      88 |   95.74 | 156,250                                                 
+  Negotiator.ts        |   93.82 |    85.36 |   76.92 |      95 | 95,218,228,311                                          
+  Scout.ts             |   91.46 |    85.91 |   77.77 |   93.42 | 245,278-285,326,390,401-403,421,425                     
+  SquadRegistration.ts |   86.61 |    72.46 |   89.28 |   88.59 | 41,96,112,190,279,332-350,422                           
+  TransferAI.ts        |   86.62 |    73.07 |   95.65 |    89.3 | 192-195,206,208,210,236,259,337-338,381-389,434-436     
+  TransferManager.ts   |   80.27 |    60.97 |   80.35 |   83.33 | 73-74,183,214,226-253,285-288,381,412-424,458,488       
+  TransferMarket.ts    |    86.3 |     75.6 |   92.45 |   88.32 | 129,133-134,158-162,221,276-282,319,327,438             
+ src/utils             |   94.02 |      100 |     100 |   93.75 |                                                         
+  SaveGameStorage.ts   |   94.02 |      100 |     100 |   93.75 | 138-139,163-164                                         
+-----------------------|---------|----------|---------|---------|---------------------------------------------------------
+
+Test Suites: 18 passed, 18 total
+Tests:       324 passed, 324 total
+Snapshots:   0 total
+Time:        7.697 s
+Ran all test suites.
