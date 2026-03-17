@@ -11,7 +11,12 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "jest"
   },
-  "keywords": ["football", "manager", "simulation", "game"],
+  "keywords": [
+    "football",
+    "manager",
+    "simulation",
+    "game"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -25,5 +30,9 @@
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0",
+    "rxjs": "^7.8.2"
   }
 }

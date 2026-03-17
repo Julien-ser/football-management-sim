@@ -13,7 +13,7 @@ Build, manage, and guide your football club through multiple seasons, balancing 
 - ✅ Task 1.1: Game Design Document (GDD) - [View docs/GDD.md](docs/GDD.md)
 - ✅ Task 1.2: Development Environment Setup
 - ✅ Task 1.3: Technology Stack Selection - [View docs/ADR-001-technology-stack.md](docs/ADR-001-technology-stack.md)
-- ⏳ Task 1.4: Data Schema & Prototype Models
+  - ✅ Task 1.4: Data Schema & Prototype Models
 
 See [TASKS.md](TASKS.md) for complete task list and progress.
 
@@ -152,6 +152,7 @@ This is a solo development project for now. Contributions not accepted unless sp
 ## 📚 Documentation
 
 - [Game Design Document](docs/GDD.md) - Comprehensive design specification
+- [Entity-Relationship Diagram](docs/ER-diagram.md) - Database schema visualization
 - [TASKS.md](TASKS.md) - Development roadmap
 - Inline code documentation (docstrings)
 
