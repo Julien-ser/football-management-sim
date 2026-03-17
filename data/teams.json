@@ -1,0 +1,104 @@
+{
+  "teams": [
+    {
+      "id": 1,
+      "name": "Real Madrid",
+      "shortName": "RMA",
+      "stadium": "Santiago Bernabéu",
+      "capacity": 810044,
+      "leagueId": 1,
+      "manager": "Carlo Ancelotti",
+      "budget": 200000000
+    },
+    {
+      "id": 2,
+      "name": "Barcelona",
+      "shortName": "BAR",
+      "stadium": "Camp Nou",
+      "capacity": 99354,
+      "leagueId": 1,
+      "manager": "Xavi Hernández",
+      "budget": 180000000
+    },
+    {
+      "id": 3,
+      "name": "Manchester United",
+      "shortName": "MUN",
+      "stadium": "Old Trafford",
+      "capacity": 74000,
+      "leagueId": 2,
+      "manager": "Erik ten Hag",
+      "budget": 160000000
+    },
+    {
+      "id": 4,
+      "name": "Liverpool",
+      "shortName": "LIV",
+      "stadium": "Anfield",
+      "capacity": 53395,
+      "leagueId": 2,
+      "manager": "Jürgen Klopp",
+      "budget": 150000000
+    },
+    {
+      "id": 5,
+      "name": "Bayern Munich",
+      "shortName": "BAY",
+      "stadium": "Allianz Arena",
+      "capacity": 75000,
+      "leagueId": 3,
+      "manager": "Thomas Tuchel",
+      "budget": 170000000
+    },
+    {
+      "id": 6,
+      "name": "Borussia Dortmund",
+      "shortName": "BVB",
+      "stadium": "Signal Iduna Park",
+      "capacity": 81365,
+      "leagueId": 3,
+      "manager": "Edin Terzić",
+      "budget": 120000000
+    },
+    {
+      "id": 7,
+      "name": "Paris Saint-Germain",
+      "shortName": "PSG",
+      "stadium": "Parc des Princes",
+      "capacity": 47929,
+      "leagueId": 4,
+      "manager": "Luis Enrique",
+      "budget": 250000000
+    },
+    {
+      "id": 8,
+      "name": "Olympique Marseille",
+      "shortName": "OM",
+      "stadium": "Stade Vélodrome",
+      "capacity": 67394,
+      "leagueId": 4,
+      "manager": "Igor Tudor",
+      "budget": 80000000
+    },
+    {
+      "id": 9,
+      "name": "AC Milan",
+      "shortName": "MIL",
+      "stadium": "San Siro",
+      "capacity": 80018,
+      "leagueId": 5,
+      "manager": "Stefano Pioli",
+      "budget": 100000000
+    },
+    {
+      "id": 10,
+      "name": "Inter Milan",
+      "shortName": "INT",
+      "stadium": "San Siro",
+      "capacity": 80018,
+      "leagueId": 5,
+      "manager": "Simone Inzaghi",
+      "budget": 110000000
+    }
+  ]
+}
