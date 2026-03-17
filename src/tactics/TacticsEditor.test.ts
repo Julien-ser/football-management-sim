@@ -18,8 +18,8 @@ describe('TacticsEditor', () => {
         potential: 80,
         nationality: 'England',
         dateOfBirth: '1990-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 50000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 50000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 2,
@@ -29,8 +29,8 @@ describe('TacticsEditor', () => {
         potential: 85,
         nationality: 'England',
         dateOfBirth: '1992-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 60000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 60000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 3,
@@ -40,8 +40,8 @@ describe('TacticsEditor', () => {
         potential: 82,
         nationality: 'England',
         dateOfBirth: '1993-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 55000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 55000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 4,
@@ -51,8 +51,8 @@ describe('TacticsEditor', () => {
         potential: 88,
         nationality: 'England',
         dateOfBirth: '1995-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 70000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 70000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 5,
@@ -62,8 +62,8 @@ describe('TacticsEditor', () => {
         potential: 90,
         nationality: 'England',
         dateOfBirth: '1994-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 75000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 75000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 6,
@@ -73,8 +73,8 @@ describe('TacticsEditor', () => {
         potential: 92,
         nationality: 'England',
         dateOfBirth: '1996-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 80000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 80000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 7,
@@ -84,8 +84,8 @@ describe('TacticsEditor', () => {
         potential: 87,
         nationality: 'England',
         dateOfBirth: '1997-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 65000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 65000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
       {
         id: 8,
@@ -95,8 +95,8 @@ describe('TacticsEditor', () => {
         potential: 86,
         nationality: 'England',
         dateOfBirth: '1998-01-01',
-        contract: { expiresAt: '2025-12-31', wage: 62000 },
-        stats: { matches: 0, goals: 0, assists: 0 },
+        contract: { teamId: 0, salary: 62000, expiryDate: '2025-12-31' },
+        stats: { goals: 0, assists: 0, appearances: 0, minutesPlayed: 0 },
       },
     ];
 
