@@ -309,9 +309,17 @@ export class MatchSimulator {
     if (homeTactics.mentality === 'attacking') homeWeight += 10;
     if (homeTactics.mentality === 'defensive') homeWeight -= 10;
 
-    // Short passing style increases possession
+    // Passing style affects possession
     if (homeTactics.passingStyle === 'short') homeWeight += 5;
     if (homeTactics.passingStyle === 'long') homeWeight -= 5;
+
+    // Width affects possession control
+    if (homeTactics.width === 'wide') homeWeight += 3;
+    if (homeTactics.width === 'narrow') homeWeight -= 3;
+
+    // Defensive line affects control
+    if (homeTactics.defensiveLine === 'high') homeWeight += 4;
+    if (homeTactics.defensiveLine === 'low') homeWeight -= 4;
 
     // Team quality difference (simplified)
     const homeAvgRating = this.getAverageRating(this.homePlayers);

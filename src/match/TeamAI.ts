@@ -43,6 +43,14 @@ export class TeamAI {
     return this.tactics;
   }
 
+  updateTactics(newTactics: Partial<Tactics>): void {
+    this.tactics = { ...this.tactics, ...newTactics };
+    // Re-select starting XI if formation changed
+    if (newTactics.formation) {
+      this.startingXI = this.selectStartingXI();
+    }
+  }
+
   getStartingXI(): PlayerRoleAssignment[] {
     return this.startingXI;
   }
