@@ -41,15 +41,15 @@ describe('TeamAI', () => {
       createPlayer({ id: 1, name: 'GK', position: 'goalkeeper' }),
       createPlayer({ id: 2, name: 'CB1', position: 'center-back' }),
       createPlayer({ id: 3, name: 'CB2', position: 'center-back' }),
-      createPlayer({ id: 4, name: 'LB', position: 'left-back' }),
-      createPlayer({ id: 5, name: 'RB', position: 'right-back' }),
+      createPlayer({ id: 4, name: 'CB3', position: 'center-back' }),
+      createPlayer({ id: 5, name: 'CB4', position: 'center-back' }),
       createPlayer({ id: 6, name: 'DM', position: 'defensive-midfielder' }),
       createPlayer({ id: 7, name: 'CM1', position: 'central-midfielder' }),
       createPlayer({ id: 8, name: 'CM2', position: 'attacking-midfielder' }),
-      createPlayer({ id: 9, name: 'RW', position: 'right-winger' }),
-      createPlayer({ id: 10, name: 'LW', position: 'left-winger' }),
-      createPlayer({ id: 11, name: 'ST1', position: 'striker' }),
-      createPlayer({ id: 12, name: 'ST2', position: 'striker' }),
+      createPlayer({ id: 9, name: 'CM3', position: 'central-midfielder' }),
+      createPlayer({ id: 10, name: 'ST1', position: 'striker' }),
+      createPlayer({ id: 11, name: 'ST2', position: 'striker' }),
+      createPlayer({ id: 12, name: 'CM4', position: 'central-midfielder' }),
     ];
     team = createTeam({ players: players.map((p) => p.id) });
     tactics = {
@@ -68,8 +68,19 @@ describe('TeamAI', () => {
     });
 
     it('fallback to team tactics when no tactics provided', () => {
-      const ai = new TeamAI(team, players);
-      expect(ai.getTactics()).toEqual(team.tactics);
+      const teamTactics = {
+        formation: '3-5-2',
+        mentality: 'attacking' as const,
+        pressingIntensity: 'high' as const,
+        passingStyle: 'long' as const,
+        playerInstructions: [],
+      };
+      const teamWithTactics = createTeam({
+        players: players.map((p) => p.id),
+        tactics: teamTactics,
+      });
+      const ai = new TeamAI(teamWithTactics, players);
+      expect(ai.getTactics()).toEqual(teamTactics);
     });
 
     it('use default tactics when none available', () => {

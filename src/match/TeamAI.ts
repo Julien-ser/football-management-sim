@@ -46,11 +46,13 @@ export class TeamAI {
   }
 
   updateTactics(newTactics: Partial<Tactics>): void {
+    const formationChanged = !!newTactics.formation;
     this.tactics = { ...this.tactics, ...newTactics };
-    // Re-select starting XI if formation changed
-    if (newTactics.formation) {
+    if (formationChanged) {
       this.startingXI = this.selectStartingXI();
       this.currentLineup = [...this.startingXI];
+    } else {
+      this.updateLineupRoles();
     }
   }
 
@@ -156,6 +158,25 @@ export class TeamAI {
     }
 
     return assignments;
+  }
+
+  private updateLineupRoles(): void {
+    const instructionMap = new Map<number, PlayerInstruction>();
+    if (this.tactics.playerInstructions) {
+      this.tactics.playerInstructions.forEach((inst) => {
+        instructionMap.set(inst.playerId, inst);
+      });
+    }
+    this.currentLineup = this.currentLineup.map((assignment) => {
+      let role = this.getRoleForPosition(assignment.position, this.tactics.mentality);
+      const instruction = instructionMap.get(assignment.playerId);
+      if (instruction?.role) {
+        role = instruction.role;
+      } else if (instruction?.duty) {
+        role = this.adjustRoleByDuty(role, instruction.duty);
+      }
+      return { ...assignment, role };
+    });
   }
 
   /**
