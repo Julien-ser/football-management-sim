@@ -16,6 +16,7 @@ export interface SimulationConfig {
   weightInjury: number;
   weightSubstitution: number;
   weightPenalty: number;
+  weightNone: number; // weight for idle minutes (no major event)
   // Minute ranges for higher/lower probability
   highIntensityStart: number; // e.g., 70 - more events in final minutes
   // Performance target
