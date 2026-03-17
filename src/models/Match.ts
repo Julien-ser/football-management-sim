@@ -47,6 +47,8 @@ export interface Match {
     fouls: { home: number; away: number };
     corners: { home: number; away: number };
     offsides: { home: number; away: number };
+    yellowCards: { home: number; away: number };
+    redCards: { home: number; away: number };
   };
 }
 

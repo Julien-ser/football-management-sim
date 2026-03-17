@@ -7,6 +7,7 @@ import SquadOverviewPanel from './components/SquadOverviewPanel';
 import FinancesPanel from './components/FinancesPanel';
 import ClubStatusPanel from './components/ClubStatusPanel';
 import CalendarPanel from './components/CalendarPanel';
+import MatchDayContainer from './components/MatchDayContainer';
 import './styles/App.css';
 
 const App: React.FC = () => {
@@ -227,6 +228,12 @@ const App: React.FC = () => {
         <h1>Loading...</h1>
       </div>
     );
+  }
+
+  // If match is in progress, show match day UI
+  const { isMatchInProgress } = useGame();
+  if (isMatchInProgress) {
+    return <MatchDayContainer onExitMatch={() => {}} />;
   }
 
   return (

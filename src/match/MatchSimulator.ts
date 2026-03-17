@@ -815,6 +815,14 @@ export class MatchSimulator {
           home: this.stats.offsides.home,
           away: this.stats.offsides.away,
         },
+        yellowCards: {
+          home: this.stats.yellowCards.home,
+          away: this.stats.yellowCards.away,
+        },
+        redCards: {
+          home: this.stats.redCards.home,
+          away: this.stats.redCards.away,
+        },
       },
     };
   }

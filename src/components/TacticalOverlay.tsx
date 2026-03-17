@@ -63,10 +63,10 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
     currentTactics.passingStyle
   );
   const [width, setWidth] = useState<'narrow' | 'balanced' | 'wide'>(
-    currentTactics.width || 'balanced'
+    (currentTactics.width as 'narrow' | 'balanced' | 'wide') || 'balanced'
   );
   const [defensiveLine, setDefensiveLine] = useState<'low' | 'medium' | 'high'>(
-    currentTactics.defensiveLine || 'medium'
+    (currentTactics.defensiveLine as 'low' | 'medium' | 'high') || 'medium'
   );
 
   if (!isVisible) return null;
@@ -197,7 +197,7 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                 <label>Width</label>
                 <select
                   value={width}
-                  onChange={(e) => setWidth(e.target.value)}
+                  onChange={(e) => setWidth(e.target.value as 'narrow' | 'balanced' | 'wide')}
                   className="tactics-select"
                 >
                   {WIDTHS.map((w) => (
@@ -212,7 +212,7 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                 <label>Defensive Line</label>
                 <select
                   value={defensiveLine}
-                  onChange={(e) => setDefensiveLine(e.target.value)}
+                  onChange={(e) => setDefensiveLine(e.target.value as 'low' | 'medium' | 'high')}
                   className="tactics-select"
                 >
                   {DEFENSIVE_LINES.map((d) => (
