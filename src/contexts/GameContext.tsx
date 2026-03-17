@@ -18,6 +18,8 @@ interface GameSettings {
   showTooltips: boolean;
 }
 
+export type { GameSettings };
+
 interface GameState {
   currentTeam: Team | null;
   setCurrentTeam: (team: Team | null) => void;
@@ -63,8 +65,10 @@ interface GameState {
   ) => void;
   endMatch: () => void;
   // Navigation state
-  currentScreen: 'mainMenu' | 'clubSelection' | 'game' | 'settings';
-  setCurrentScreen: (screen: 'mainMenu' | 'clubSelection' | 'game' | 'settings') => void;
+  currentScreen: 'mainMenu' | 'clubSelection' | 'game' | 'settings' | 'loadGame' | 'saveGame';
+  setCurrentScreen: (
+    screen: 'mainMenu' | 'clubSelection' | 'game' | 'settings' | 'loadGame' | 'saveGame'
+  ) => void;
   // Settings
   settings: GameSettings;
   updateSettings: (settings: Partial<GameSettings>) => void;
@@ -107,7 +111,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   // Navigation state
   const [currentScreen, setCurrentScreen] = useState<
-    'mainMenu' | 'clubSelection' | 'game' | 'settings'
+    'mainMenu' | 'clubSelection' | 'game' | 'settings' | 'loadGame' | 'saveGame'
   >('mainMenu');
   const [settings, setSettings] = useState<GameSettings>({
     graphicsQuality: 'medium',
