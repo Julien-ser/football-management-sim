@@ -17,6 +17,18 @@ export interface SimulateMatchOptions {
   config?: SimulationConfig;
 }
 
+export interface PlayerPerformance {
+  playerId: number;
+  playerName: string;
+  position: string;
+  minutesPlayed: number;
+  goals: number;
+  assists: number;
+  yellowCards: number;
+  redCards: number;
+  rating: number; // 0-10 scale
+}
+
 export class MatchSimulator {
   private eventManager: EventManager;
   private config: SimulationConfig;
@@ -37,6 +49,11 @@ export class MatchSimulator {
   private isHalfTime: boolean = false;
   private isFullTime: boolean = false;
 
+  // Substitution tracking
+  private homeSubstitutionsUsed: number = 0;
+  private awaySubstitutionsUsed: number = 0;
+  private maxSubstitutionsPerTeam: number = 5; // Typically 3-5 in modern football
+
   // Statistics
   private stats = {
     possession: { home: 50, away: 50 },
@@ -53,10 +70,12 @@ export class MatchSimulator {
 
   // Fatigue tracking (playerId -> fatigue level 0-100)
   private playerFatigue: Map<number, number> = new Map();
-  // Player availability (substituted/injured)
+  // Player availability (substituted/injured/sent off)
   private unavailablePlayers: Set<number> = new Set();
   // Yellow card tracking (playerId -> count)
   private playerYellowCards: Map<number, number> = new Map();
+  // Player performance tracking
+  private playerPerformance: Map<number, PlayerPerformance> = new Map();
 
   // Match result
   private events: EventManagerMatchEvent[] = [];
@@ -92,10 +111,67 @@ export class MatchSimulator {
       this.awayPlayers,
       this.awayTeamAI.getTactics().playerInstructions
     );
+
+    // Initialize player performance tracking
+    this.initializePlayerPerformance(options.homePlayers, options.awayPlayers);
+
+    // Initialize current lineups from TeamAI
+    this.homeTeamAI.setLineup(this.homeTeamAI.getStartingXI());
+    this.awayTeamAI.setLineup(this.awayTeamAI.getStartingXI());
+  }
+
+  private initializePlayerPerformance(homePlayers: Player[], awayPlayers: Player[]): void {
+    homePlayers.forEach((p) => {
+      this.playerPerformance.set(p.id, {
+        playerId: p.id,
+        playerName: p.name,
+        position: p.position,
+        minutesPlayed: 0,
+        goals: 0,
+        assists: 0,
+        yellowCards: 0,
+        redCards: 0,
+        rating: 0,
+      });
+    });
+    awayPlayers.forEach((p) => {
+      this.playerPerformance.set(p.id, {
+        playerId: p.id,
+        playerName: p.name,
+        position: p.position,
+        minutesPlayed: 0,
+        goals: 0,
+        assists: 0,
+        yellowCards: 0,
+        redCards: 0,
+        rating: 0,
+      });
+    });
   }
 
   getEventManager(): EventManager {
     return this.eventManager;
+  }
+
+  // Getters for real-time UI polling
+  getCurrentMinute(): number {
+    return this.currentMinute;
+  }
+
+  getScore(): { home: number; away: number } {
+    return { home: this.homeScore, away: this.awayScore };
+  }
+
+  getStatistics() {
+    return { ...this.stats };
+  }
+
+  isMatchHalfTime(): boolean {
+    return this.isHalfTime;
+  }
+
+  isMatchFullTime(): boolean {
+    return this.isFullTime;
   }
 
   /**
@@ -139,7 +215,7 @@ export class MatchSimulator {
       : this.awayTacticsEngine.getModifiers();
   }
 
-  async simulate(): Promise<Match> {
+  async simulate(speed: number = 0): Promise<Match> {
     this.startTime = Date.now();
     this.events = [];
     this.currentMinute = 0;
@@ -192,6 +268,14 @@ export class MatchSimulator {
 
       this.simulateMinute(this.currentMinute);
 
+      // Emit minute-passed event for real-time UI updates
+      this.emitEvent({
+        minute: this.currentMinute,
+        type: 'minute-passed',
+        teamId: this.homeTeam.id,
+        details: '',
+      });
+
       // Add half-time break logic
       if (this.currentMinute === 45 && this.half === 1) {
         const halfTimeEvent: EventManagerMatchEvent = {
@@ -208,6 +292,15 @@ export class MatchSimulator {
         this.playerFatigue.forEach((fatigue, playerId) => {
           this.playerFatigue.set(playerId, Math.max(0, fatigue - 20));
         });
+        // Extra delay for half-time break
+        if (speed > 0) {
+          await new Promise((resolve) => setTimeout(resolve, speed * 2));
+        }
+      }
+
+      // Delay between minutes for real-time simulation
+      if (speed > 0) {
+        await new Promise((resolve) => setTimeout(resolve, speed));
       }
     }
 

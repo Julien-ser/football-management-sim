@@ -25,6 +25,7 @@ export class TeamAI {
   private tactics: Tactics;
   private substitutions: number = 0;
   private maxSubstitutions: number = 5;
+  private currentLineup: PlayerRoleAssignment[] = [];
 
   constructor(team: Team, players: PlayerModel[], tactics?: Tactics) {
     this.team = team;
@@ -37,6 +38,7 @@ export class TeamAI {
         passingStyle: 'mixed',
       };
     this.startingXI = this.selectStartingXI();
+    this.currentLineup = [...this.startingXI];
   }
 
   getTactics(): Tactics {
@@ -48,11 +50,45 @@ export class TeamAI {
     // Re-select starting XI if formation changed
     if (newTactics.formation) {
       this.startingXI = this.selectStartingXI();
+      this.currentLineup = [...this.startingXI];
     }
   }
 
   getStartingXI(): PlayerRoleAssignment[] {
-    return this.startingXI;
+    return this.currentLineup;
+  }
+
+  setLineup(lineup: PlayerRoleAssignment[]): void {
+    this.currentLineup = lineup;
+  }
+
+  replacePlayer(playerOutId: number, playerInId: number): boolean {
+    const index = this.currentLineup.findIndex((p) => p.playerId === playerOutId);
+    if (index === -1) return false;
+
+    const playerIn = this.players.find((p) => p.id === playerInId);
+    if (!playerIn) return false;
+
+    // Check if playerIn is already on field
+    if (this.currentLineup.some((p) => p.playerId === playerInId)) {
+      return false;
+    }
+
+    // Determine position to maintain formation
+    const position = this.currentLineup[index].position;
+    const role = this.getRoleForPosition(position, this.tactics.mentality);
+
+    this.currentLineup[index] = {
+      playerId: playerInId,
+      position: position,
+      role: role,
+    };
+    return true;
+  }
+
+  getAvailableSubstitutes(): PlayerModel[] {
+    const currentPlayerIds = new Set(this.currentLineup.map((p) => p.playerId));
+    return this.players.filter((p) => !currentPlayerIds.has(p.id));
   }
 
   getFormationPositions(formation: string): string[] {

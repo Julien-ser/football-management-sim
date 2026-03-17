@@ -32,6 +32,19 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
   const [matchMinute, setMatchMinute] = useState(0);
   const [isHalfTime, setIsHalfTime] = useState(false);
   const [matchCompleted, setMatchCompleted] = useState(false);
+  const [currentStats, setCurrentStats] = useState<NonNullable<Match['statistics']>>({
+    possession: { home: 50, away: 50 },
+    shots: { home: 0, away: 0 },
+    shotsOnTarget: { home: 0, away: 0 },
+    passes: { home: 0, away: 0 },
+    passAccuracy: { home: 0, away: 0 },
+    fouls: { home: 0, away: 0 },
+    corners: { home: 0, away: 0 },
+    offsides: { home: 0, away: 0 },
+    yellowCards: { home: 0, away: 0 },
+    redCards: { home: 0, away: 0 },
+  });
+  const [currentScore, setCurrentScore] = useState({ home: 0, away: 0 });
   const [substitutionPairs, setSubstitutionPairs] = useState<{
     out: number | null;
     in: number | null;
@@ -41,77 +54,54 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
   const homePlayers = players.filter((p) => homeTeam?.players?.includes(p.id as number));
   const awayPlayers = players.filter((p) => awayTeam?.players?.includes(p.id as number));
 
-  // Real-time match simulation loop
+  // Start simulation when match begins
   useEffect(() => {
     if (!isMatchInProgress || !matchSimulator) return;
 
-    let animationFrameId: number;
-    let lastUpdateTime = Date.now();
-
-    const simulateMatchLoop = async () => {
-      const currentTime = Date.now();
-      const deltaTime = currentTime - lastUpdateTime;
-
-      // Simulate one minute every 2 seconds (30x speed)
-      if (deltaTime >= 2000 && matchMinute < 90) {
-        // The MatchSimulator already runs the full simulation in its simulate() method
-        // But we want real-time feel, so we'll simulate minute by minute
-        // For now, we'll run the full simulation and use events incrementally
-        setMatchMinute((prev) => {
-          const newMinute = prev + 1;
-          if (newMinute === 45) {
-            setIsHalfTime(true);
-          }
-          return newMinute;
-        });
-        lastUpdateTime = currentTime;
-      }
-
-      // Check if match completed
-      if (matchMinute >= 90 && !matchCompleted) {
-        setMatchCompleted(true);
-        // Get final match result
-        if (matchSimulator) {
-          const result = matchSimulator['buildMatchResult']();
-          setCurrentMatch(result);
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(simulateMatchLoop);
-    };
-
-    animationFrameId = requestAnimationFrame(simulateMatchLoop);
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [isMatchInProgress, matchSimulator, matchMinute, matchCompleted, setCurrentMatch]);
-
-  // Alternatively, if we want to use the existing MatchSimulator directly:
-  useEffect(() => {
-    if (!isMatchInProgress || !matchSimulator) return;
+    let isCancelled = false;
 
     const runSimulation = async () => {
       try {
-        // Run the full simulation
-        const result = await matchSimulator.simulate();
-        setCurrentMatch(result);
-        setMatchMinute(90);
-        setMatchCompleted(true);
+        // Run simulation with 2 seconds per minute for real-time feel
+        const result = await matchSimulator.simulate(2000);
+        if (!isCancelled) {
+          setCurrentMatch(result);
+          setMatchCompleted(true);
+        }
       } catch (error) {
         console.error('Match simulation error:', error);
       }
     };
 
-    // Small delay to allow UI to render before simulation starts
-    const timer = setTimeout(() => {
-      runSimulation();
-    }, 1000);
+    runSimulation();
 
-    return () => clearTimeout(timer);
+    return () => {
+      isCancelled = true;
+    };
   }, [isMatchInProgress, matchSimulator, setCurrentMatch]);
+
+  // Poll simulator state for real-time UI updates
+  useEffect(() => {
+    if (!matchSimulator || !isMatchInProgress) return;
+
+    const pollInterval = setInterval(() => {
+      setMatchMinute(matchSimulator.getCurrentMinute());
+      setIsHalfTime(matchSimulator.isMatchHalfTime());
+      setCurrentScore(matchSimulator.getScore());
+      setCurrentStats(matchSimulator.getStatistics());
+    }, 100); // Update UI every 100ms
+
+    return () => clearInterval(pollInterval);
+  }, [matchSimulator, isMatchInProgress]);
+
+  // Detect match completion from events (as backup)
+  useEffect(() => {
+    if (matchEvents.length === 0) return;
+    const lastEvent = matchEvents[matchEvents.length - 1];
+    if (lastEvent.type === 'full-time' || lastEvent.type === 'match-end') {
+      setMatchCompleted(true);
+    }
+  }, [matchEvents]);
 
   const handleTacticsChange = useCallback(
     (team: 'home' | 'away', tactics: Partial<Tactics>) => {
@@ -126,20 +116,6 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
     // TODO: Implement actual substitution logic in MatchSimulator
     setSubstitutionPairs({ out: null, in: null });
   }, []);
-
-  const currentScore = currentMatch?.score || { home: 0, away: 0 };
-  const stats: Match['statistics'] = currentMatch?.statistics || {
-    possession: { home: 50, away: 50 },
-    shots: { home: 0, away: 0 },
-    shotsOnTarget: { home: 0, away: 0 },
-    passes: { home: 0, away: 0 },
-    passAccuracy: { home: 0, away: 0 },
-    fouls: { home: 0, away: 0 },
-    corners: { home: 0, away: 0 },
-    offsides: { home: 0, away: 0 },
-    yellowCards: { home: 0, away: 0 },
-    redCards: { home: 0, away: 0 },
-  };
 
   // Generate match report summary
   const generateMatchReport = () => {
@@ -160,18 +136,18 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
     }
 
     // Add stats summary
-    if (stats.possession.home > 55) {
-      report += `${homeTeam?.name} controlled the game with ${stats.possession.home}% possession. `;
-    } else if (stats.possession.away > 55) {
-      report += `${awayTeam?.name} dominated possession with ${stats.possession.away}%. `;
+    if (currentStats.possession.home > 55) {
+      report += `${homeTeam?.name} controlled the game with ${currentStats.possession.home}% possession. `;
+    } else if (currentStats.possession.away > 55) {
+      report += `${awayTeam?.name} dominated possession with ${currentStats.possession.away}%. `;
     }
 
     // Add shooting analysis
-    if (stats.shotsOnTarget.home > 5) {
-      report += `${homeTeam?.name} was clinical in front of goal with ${stats.shotsOnTarget.home} shots on target. `;
+    if (currentStats.shotsOnTarget.home > 5) {
+      report += `${homeTeam?.name} was clinical in front of goal with ${currentStats.shotsOnTarget.home} shots on target. `;
     }
-    if (stats.shotsOnTarget.away > 5) {
-      report += `${awayTeam?.name} created numerous chances with ${stats.shotsOnTarget.away} shots on target. `;
+    if (currentStats.shotsOnTarget.away > 5) {
+      report += `${awayTeam?.name} created numerous chances with ${currentStats.shotsOnTarget.away} shots on target. `;
     }
 
     return report.trim();
@@ -220,7 +196,7 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
           <MatchStatsPanel
             homeTeamName={homeTeam.name}
             awayTeamName={awayTeam.name}
-            stats={stats}
+            stats={currentStats}
             currentScore={currentScore}
             matchTime={matchMinute}
             isHalfTime={isHalfTime}
@@ -280,9 +256,9 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
           <div className="match-report-section">
             <h3>⭐ Key Statistics</h3>
             <p>
-              Possession: {stats.possession.home}% - {stats.possession.away}% | Shots:{' '}
-              {stats.shots.home} - {stats.shots.away} | Shots on Target: {stats.shotsOnTarget.home}{' '}
-              - {stats.shotsOnTarget.away}
+              Possession: {currentStats.possession.home}% - {currentStats.possession.away}% | Shots:{' '}
+              {currentStats.shots.home} - {currentStats.shots.away} | Shots on Target:{' '}
+              {currentStats.shotsOnTarget.home} - {currentStats.shotsOnTarget.away}
             </p>
           </div>
         </div>
