@@ -12,6 +12,7 @@ export interface SimulationConfig {
   weightGoal: number;
   weightYellowCard: number;
   weightRedCard: number;
+  weightOwnGoal: number;
   weightInjury: number;
   weightSubstitution: number;
   weightPenalty: number;
@@ -31,6 +32,7 @@ export const DEFAULT_SIMULATION_CONFIG: SimulationConfig = {
   weightGoal: 1.0,
   weightYellowCard: 2.5,
   weightRedCard: 0.3,
+  weightOwnGoal: 0.05, // rare
   weightInjury: 0.5,
   weightSubstitution: 0.8,
   weightPenalty: 0.15,

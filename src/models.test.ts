@@ -13,8 +13,14 @@ describe('Data Models', () => {
     const compsData = readFileSync(`${dataPath}/competitions.json`, 'utf-8');
 
     players = JSON.parse(playersData).players;
-    teams = JSON.parse(teamsData).teams;
+    const rawTeams = JSON.parse(teamsData).teams;
     competitions = JSON.parse(compsData).competitions;
+
+    // Enrich teams with players array based on player.teamId
+    teams = rawTeams.map((team: any) => ({
+      ...team,
+      players: players.filter((p) => p.teamId === team.id).map((p) => p.id),
+    }));
   });
 
   test('should have 100 players', () => {

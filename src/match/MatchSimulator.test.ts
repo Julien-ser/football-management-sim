@@ -24,6 +24,10 @@ describe('MatchSimulator', () => {
     const team1 = teams[0];
     const team2 = teams[1];
 
+    // Build player lists based on teamId from players
+    const team1PlayerIds = players.filter((p) => p.teamId === team1.id).map((p) => p.id);
+    const team2PlayerIds = players.filter((p) => p.teamId === team2.id).map((p) => p.id);
+
     homeTeam = {
       id: team1.id,
       name: team1.name,
@@ -33,7 +37,7 @@ describe('MatchSimulator', () => {
       leagueId: team1.leagueId,
       manager: team1.manager,
       budget: team1.budget,
-      players: team1.players,
+      players: team1PlayerIds,
       tactics: team1.tactics,
     };
 
@@ -46,12 +50,12 @@ describe('MatchSimulator', () => {
       leagueId: team2.leagueId,
       manager: team2.manager,
       budget: team2.budget,
-      players: team2.players,
+      players: team2PlayerIds,
       tactics: team2.tactics,
     };
 
     homePlayers = players
-      .filter((p) => team1.players.includes(p.id))
+      .filter((p) => p.teamId === team1.id)
       .map((p) => ({
         id: p.id,
         name: p.name,
@@ -65,7 +69,7 @@ describe('MatchSimulator', () => {
       }));
 
     awayPlayers = players
-      .filter((p) => team2.players.includes(p.id))
+      .filter((p) => p.teamId === team2.id)
       .map((p) => ({
         id: p.id,
         name: p.name,

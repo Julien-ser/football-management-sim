@@ -52,6 +52,8 @@ export class MatchSimulator {
   private playerFatigue: Map<number, number> = new Map();
   // Player availability (substituted/injured)
   private unavailablePlayers: Set<number> = new Set();
+  // Yellow card tracking (playerId -> count)
+  private playerYellowCards: Map<number, number> = new Map();
 
   // Match result
   private events: EventManagerMatchEvent[] = [];
@@ -104,18 +106,27 @@ export class MatchSimulator {
     };
     this.playerFatigue.clear();
     this.unavailablePlayers.clear();
+    this.playerYellowCards.clear();
 
     // Initialize player fatigue
-    this.homePlayers.forEach((p) => this.playerFatigue.set(p.id, 0));
-    this.awayPlayers.forEach((p) => this.playerFatigue.set(p.id, 0));
+    this.homePlayers.forEach((p) => {
+      this.playerFatigue.set(p.id, 0);
+      this.playerYellowCards.set(p.id, 0);
+    });
+    this.awayPlayers.forEach((p) => {
+      this.playerFatigue.set(p.id, 0);
+      this.playerYellowCards.set(p.id, 0);
+    });
 
     // Emit match start
-    this.emitEvent({
+    const startEvent: EventManagerMatchEvent = {
       minute: 0,
       type: 'match-start',
       teamId: this.homeTeam.id,
       details: `Match starting: ${this.homeTeam.name} vs ${this.awayTeam.name}`,
-    });
+    };
+    this.events.push(startEvent);
+    this.emitEvent(startEvent);
 
     // Simulate each minute
     const totalMinutes = this.config.matchDuration + this.getExtraTime();
@@ -127,11 +138,14 @@ export class MatchSimulator {
 
       // Add half-time break logic
       if (this.currentMinute === 45 && this.half === 1) {
-        this.emitEvent({
+        const halfTimeEvent: EventManagerMatchEvent = {
           minute: 45,
           type: 'half-time',
+          teamId: this.homeTeam.id,
           details: 'Half time',
-        });
+        };
+        this.events.push(halfTimeEvent);
+        this.emitEvent(halfTimeEvent);
         this.isHalfTime = true;
         this.half = 2;
         // Brief "break" - reset some fatigue
@@ -143,11 +157,14 @@ export class MatchSimulator {
 
     // Ensure full-time event
     if (!this.isFullTime) {
-      this.emitEvent({
+      const fullTimeEvent: EventManagerMatchEvent = {
         minute: totalMinutes,
         type: 'full-time',
+        teamId: this.homeTeam.id,
         details: `Final score: ${this.homeScore} - ${this.awayScore}`,
-      });
+      };
+      this.events.push(fullTimeEvent);
+      this.emitEvent(fullTimeEvent);
     }
 
     this.eventManager.complete();
@@ -318,7 +335,9 @@ export class MatchSimulator {
     // Calculate weighted random event
     const weights = [
       { type: 'goal', weight: this.config.weightGoal * intensityMultiplier },
+      { type: 'own-goal', weight: this.config.weightOwnGoal * intensityMultiplier },
       { type: 'yellow-card', weight: this.config.weightYellowCard },
+      { type: 'red-card', weight: this.config.weightRedCard },
       { type: 'injury', weight: this.config.weightInjury },
     ];
 
@@ -358,14 +377,13 @@ export class MatchSimulator {
           ? `Goal! ${scorer.name}${assist ? ` assisted by ${assist.name}` : ''} scores!`
           : 'Goal!';
 
-        if (scorer) {
-          this.stats.shots[attackingTeam]++;
-          this.stats.shotsOnTarget[attackingTeam]++;
-          if (attackingTeam === 'home') {
-            this.homeScore++;
-          } else {
-            this.awayScore++;
-          }
+        // Always increment score and stats for a goal event
+        this.stats.shots[attackingTeam]++;
+        this.stats.shotsOnTarget[attackingTeam]++;
+        if (attackingTeam === 'home') {
+          this.homeScore++;
+        } else {
+          this.awayScore++;
         }
 
         return {
@@ -413,29 +431,41 @@ export class MatchSimulator {
         };
       }
 
-      case 'penalty': {
-        const scorer = this.selectScorer(attackingTeam);
-        const isScored = Math.random() < 0.75; // 75% penalty conversion rate
-        const details = scorer
-          ? `Penalty${isScored ? ' scored!' : ' missed!'} by ${scorer.name}`
-          : 'Penalty awarded';
-
-        if (isScored) {
-          this.stats.shots[attackingTeam]++;
-          this.stats.shotsOnTarget[attackingTeam]++;
-          if (attackingTeam === 'home') {
-            this.homeScore++;
-          } else {
-            this.awayScore++;
-          }
-        }
-
+      case 'red-card': {
+        const player = this.selectRandomPlayer(
+          attackingTeam === 'home' ? 'away' : 'home',
+          'red-card'
+        );
+        const teamId = player
+          ? this.homePlayers.includes(player)
+            ? this.homeTeam.id
+            : this.awayTeam.id
+          : attackingTeam === 'home'
+            ? this.awayTeam.id
+            : this.homeTeam.id;
         return {
           minute,
-          type: isScored ? 'penalty' : 'missed-penalty',
-          playerId: scorer?.id,
-          teamId: attackingTeamId,
-          details,
+          type: 'red-card',
+          playerId: player?.id,
+          teamId,
+          details: `Red card for ${player?.name || 'a player'}`,
+        };
+      }
+
+      case 'own-goal': {
+        // Own goal: player from defending team puts ball in their own net
+        const defendingTeam = attackingTeam === 'home' ? 'away' : 'home';
+        const player = this.selectRandomPlayer(defendingTeam, 'own-goal');
+        // teamId should be the team that benefits (attacking team)
+        // as per test expectations
+        const teamId = attackingTeamId;
+        // Score for the attacking team (already incremented via processEvent later)
+        return {
+          minute,
+          type: 'own-goal',
+          playerId: player?.id,
+          teamId,
+          details: `Own goal by ${player?.name || 'a defender'}!`,
         };
       }
 
@@ -474,6 +504,48 @@ export class MatchSimulator {
 
   private processEvent(event: EventManagerMatchEvent): void {
     this.events.push(event);
+
+    // Track yellow cards and convert to red on second yellow
+    if (event.type === 'yellow-card' && event.playerId) {
+      const currentYellow = this.playerYellowCards.get(event.playerId) || 0;
+      this.playerYellowCards.set(event.playerId, currentYellow + 1);
+
+      // Second yellow = red card
+      if (currentYellow + 1 >= 2) {
+        const redCardEvent: EventManagerMatchEvent = {
+          minute: event.minute,
+          type: 'red-card',
+          playerId: event.playerId,
+          teamId: event.teamId,
+          details: `Red card! ${event.details} (second yellow)`,
+        };
+        this.events.push(redCardEvent);
+        this.emitEvent(redCardEvent);
+        this.unavailablePlayers.add(event.playerId);
+        this.stats.redCards[event.teamId === this.homeTeam.id ? 'home' : 'away']++;
+      }
+    }
+
+    // Mark player unavailable for red cards (direct or from second yellow)
+    if (event.type === 'red-card' && event.playerId) {
+      this.unavailablePlayers.add(event.playerId);
+      this.stats.redCards[event.teamId === this.homeTeam.id ? 'home' : 'away']++;
+    }
+
+    // Handle injuries
+    if (event.type === 'injury' && event.playerId) {
+      this.unavailablePlayers.add(event.playerId);
+    }
+
+    // Handle own goals - event.teamId is the benefiting team (attacking)
+    if (event.type === 'own-goal') {
+      if (event.teamId === this.homeTeam.id) {
+        this.homeScore++;
+      } else {
+        this.awayScore++;
+      }
+    }
+
     this.emitEvent(event);
   }
 

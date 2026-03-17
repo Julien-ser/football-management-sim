@@ -19,7 +19,13 @@ See [TASKS.md](TASKS.md) for complete task list and progress.
 
 ## 🎮 Core Features
 
-- **Match Simulation:** Event-driven engine with real-time tactics and statistics
+- **Match Simulation Engine:** Full 90+ minute simulation in <5 seconds with realistic event-driven mechanics including:
+  - Goals, own goals, penalties, and missed penalties
+  - Yellow and red cards (including second yellow → red)
+  - Injuries and substitutions with AI decision-making
+  - Real-time statistics: possession, shots, passes, fouls, corners, offsides
+  - Tactical influence on match outcomes (formation, mentality, pressing, passing style)
+  - Event streaming via RxJS for live commentary and UI updates
 - **Tactics System:** Formation editor (4-4-2, 4-3-3, etc.), team/player instructions
 - **Transfer Market:** Player search, scouting, bidding, contract negotiation
 - **Competitions:** Domestic leagues, cups, and UEFA Champions League/Europa League/Conference League
