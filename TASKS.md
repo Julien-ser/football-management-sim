@@ -31,7 +31,7 @@
 
 ## Phase 3: UI/UX & Polish
 
-- [ ] Task 3.1: Design Main Game HUD Interface
+- [x] Task 3.1: Design Main Game HUD Interface
   - **Deliverable:** Fully styled main game screen with live league table panel, squad overview with player stats, finances dashboard (budget,收入支出), club status indicators (morale, board confidence), and navigable calendar. Must be responsive and visually consistent with a football manager aesthetic.
 - [ ] Task 3.2: Implement Match Day UI & Live Commentary
   - **Deliverable:** In-match interface with real-time commentary panel (text-based), tactical overlay for in-game changes (formation, mentality, substitutions), key match stats visualization (shots on target, possession), and post-match analysis with player ratings and match report.

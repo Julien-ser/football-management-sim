@@ -7,13 +7,29 @@ const SquadOverviewPanel: React.FC = () => {
   if (!currentTeam) {
     return (
       <div className="panel squad-panel">
-        <h2>Squad</h2>
+        <h2>👥 Squad</h2>
         <p>No team selected</p>
       </div>
     );
   }
 
   const squadPlayers = players.filter((p) => currentTeam.players.includes(p.id));
+
+  const getPositionIcon = (position: string): string => {
+    const iconMap: Record<string, string> = {
+      goalkeeper: '🧤',
+      'right-back': '🛡️',
+      'left-back': '🛡️',
+      'center-back': '🛡️',
+      'defensive-midfielder': '⚙️',
+      'central-midfielder': '⚙️',
+      'attacking-midfielder': '⚙️',
+      'right-winger': '⚡',
+      'left-winger': '⚡',
+      striker: '⚽',
+    };
+    return iconMap[position] || '👤';
+  };
 
   const getPositionShort = (position: string): string => {
     const positionMap: Record<string, string> = {
@@ -33,14 +49,14 @@ const SquadOverviewPanel: React.FC = () => {
 
   return (
     <div className="panel squad-panel">
-      <h2>Squad - {currentTeam.name}</h2>
+      <h2>👥 Squad - {currentTeam.name}</h2>
       <div className="table-container">
         <table>
           <thead>
             <tr>
               <th>Name</th>
               <th>Pos</th>
-              <th>Rating</th>
+              <th>⭐ Rating</th>
               <th>Age</th>
               <th>Wage</th>
             </tr>
@@ -53,8 +69,13 @@ const SquadOverviewPanel: React.FC = () => {
                 return (
                   <tr key={player.id}>
                     <td>{player.name}</td>
-                    <td>{getPositionShort(player.position)}</td>
-                    <td>{player.currentRating}</td>
+                    <td>
+                      <span className="position-icon">{getPositionIcon(player.position)}</span>
+                      {getPositionShort(player.position)}
+                    </td>
+                    <td>
+                      <strong>{player.currentRating}</strong>
+                    </td>
                     <td>{age}</td>
                     <td>€{(player.contract.salary / 1000).toFixed(0)}k</td>
                   </tr>

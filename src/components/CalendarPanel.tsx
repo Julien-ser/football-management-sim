@@ -8,7 +8,7 @@ const CalendarPanel: React.FC = () => {
   if (!calendar) {
     return (
       <div className="panel calendar-panel">
-        <h2>Calendar</h2>
+        <h2>📅 Calendar</h2>
         <p>No calendar data available</p>
       </div>
     );
@@ -26,6 +26,15 @@ const CalendarPanel: React.FC = () => {
     });
   };
 
+  const getDaysUntil = (dateStr: string): number => {
+    const matchDate = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffTime = matchDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   const handlePrevWeek = () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() - 7);
@@ -40,30 +49,49 @@ const CalendarPanel: React.FC = () => {
 
   return (
     <div className="panel calendar-panel">
-      <h2>Calendar</h2>
+      <h2>📅 Calendar</h2>
       {nextMatch && (
         <div className="next-match">
-          <h3>Next Match</h3>
-          <p>{formatDate(nextMatch.date)} - Check fixtures for details</p>
+          <h3>⚡ Next Match</h3>
+          <p>
+            {formatDate(nextMatch.date)} ({getDaysUntil(nextMatch.date)} days)
+          </p>
         </div>
       )}
       <div className="calendar-controls">
         <button onClick={handlePrevWeek}>&lt; Prev Week</button>
-        <span>{selectedDate.toLocaleDateString()}</span>
+        <span>{selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
         <button onClick={handleNextWeek}>Next Week &gt;</button>
       </div>
       <div className="upcoming-matches">
-        <h3>Upcoming Matches</h3>
+        <h3>📋 Next 5 Fixtures</h3>
         <ul>
-          {upcomingMatches.slice(0, 10).map((match) => (
-            <li key={match.id} className={match.status}>
-              <span className="date">{formatDate(match.date)}</span>
-              <span className="match">
-                {match.homeTeamId} vs {match.awayTeamId}
-              </span>
-              <span className="status">{match.status}</span>
-            </li>
-          ))}
+          {upcomingMatches.slice(0, 5).map((match) => {
+            const daysUntil = getDaysUntil(match.date);
+            const isHome = match.homeTeamId === currentTeam?.id;
+            const opponent =
+              match.homeTeamId === currentTeam?.id ? match.awayTeamId : match.homeTeamId;
+            return (
+              <li key={match.id}>
+                <span className="date">
+                  {formatDate(match.date)}
+                  {daysUntil === 0 && ' (Today!)'}
+                  {daysUntil === 1 && ' (Tomorrow)'}
+                  {daysUntil > 0 && ` (${daysUntil}d)`}
+                </span>
+                <span className="match">
+                  {isHome ? '🏠 vs' : '✈️ @'} {opponent}
+                </span>
+                <span className="status">
+                  {isHome ? (
+                    <span className="badge badge-home">H</span>
+                  ) : (
+                    <span className="badge badge-away">A</span>
+                  )}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
