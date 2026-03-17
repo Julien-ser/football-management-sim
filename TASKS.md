@@ -33,8 +33,9 @@
 
 - [x] Task 3.1: Design Main Game HUD Interface
   - **Deliverable:** Fully styled main game screen with live league table panel, squad overview with player stats, finances dashboard (budget,收入支出), club status indicators (morale, board confidence), and navigable calendar. Must be responsive and visually consistent with a football manager aesthetic.
-- [ ] Task 3.2: Implement Match Day UI & Live Commentary
+- [x] Task 3.2: Implement Match Day UI & Live Commentary
   - **Deliverable:** In-match interface with real-time commentary panel (text-based), tactical overlay for in-game changes (formation, mentality, substitutions), key match stats visualization (shots on target, possession), and post-match analysis with player ratings and match report.
+  - **Status:** Completed on 2026-03-17. Implemented comprehensive match day UI with MatchDayContainer orchestrating real-time simulation display, CommentaryPanel with event feed (50 latest events), TacticalOverlay with both tactics editor (formation, mentality, pressing, passing style, width, defensive line) and functional substitution system, MatchStatsPanel with animated stat bars, and post-match analysis featuring detailed player ratings table sorted by performance. Integrated MatchSimulator methods (substitute, getPlayerPerformance) and enhanced performance tracking (goals, assists, cards, minutes, computed ratings 0-10). All 159 existing tests still passing.
 - [ ] Task 3.3: Build Menu & Navigation Systems
   - **Deliverable:** Main menu (start new career, load game, settings, quit), club selection screen (choose from playable leagues), settings panel (graphics, audio, gameplay preferences), and robust save/load system with at least 10 save slots and autosave functionality.
 - [ ] Task 3.4: Integrate Audio/Visual Assets & Animations

@@ -49,6 +49,19 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
     out: number | null;
     in: number | null;
   }>({ out: null, in: null });
+  const [playerPerformances, setPlayerPerformances] = useState<
+    Array<{
+      playerId: number;
+      playerName: string;
+      position: string;
+      minutesPlayed: number;
+      goals: number;
+      assists: number;
+      yellowCards: number;
+      redCards: number;
+      rating: number;
+    }>
+  >([]);
 
   // Filter players for home team (assuming current team is home)
   const homePlayers = players.filter((p) => homeTeam?.players?.includes(p.id as number));
@@ -98,10 +111,13 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
   useEffect(() => {
     if (matchEvents.length === 0) return;
     const lastEvent = matchEvents[matchEvents.length - 1];
-    if (lastEvent.type === 'full-time' || lastEvent.type === 'match-end') {
+    if ((lastEvent.type === 'full-time' || lastEvent.type === 'match-end') && matchSimulator) {
       setMatchCompleted(true);
+      // Fetch player performances
+      const performances = matchSimulator.getPlayerPerformance();
+      setPlayerPerformances(performances);
     }
-  }, [matchEvents]);
+  }, [matchEvents, matchSimulator]);
 
   const handleTacticsChange = useCallback(
     (team: 'home' | 'away', tactics: Partial<Tactics>) => {
@@ -111,11 +127,21 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
     [updateMatchTactics]
   );
 
-  const handleSubstitution = useCallback((playerOutId: number, playerInId: number) => {
-    console.log(`Substituting player ${playerOutId} with ${playerInId}`);
-    // TODO: Implement actual substitution logic in MatchSimulator
-    setSubstitutionPairs({ out: null, in: null });
-  }, []);
+  const handleSubstitution = useCallback(
+    (playerOutId: number, playerInId: number) => {
+      if (!matchSimulator) return;
+
+      const success = matchSimulator.substitute('home', playerOutId, playerInId);
+      if (success) {
+        console.log(`Substitution successful: ${playerOutId} out, ${playerInId} in`);
+        setSubstitutionPairs({ out: null, in: null });
+      } else {
+        console.error('Substitution failed - check player availability or substitution limits');
+        alert('Substitution failed. Check player availability or substitution limits.');
+      }
+    },
+    [matchSimulator]
+  );
 
   // Generate match report summary
   const generateMatchReport = () => {
@@ -261,6 +287,93 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
               {currentStats.shotsOnTarget.home} - {currentStats.shotsOnTarget.away}
             </p>
           </div>
+
+          {playerPerformances.length > 0 && (
+            <div className="match-report-section">
+              <h3>👥 Player Ratings</h3>
+              <div className="player-ratings-container">
+                <h4>{homeTeam.name}</h4>
+                <table className="player-ratings-table">
+                  <thead>
+                    <tr>
+                      <th>Player</th>
+                      <th>Position</th>
+                      <th>Min</th>
+                      <th>G/A</th>
+                      <th>Cards</th>
+                      <th>Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {playerPerformances
+                      .filter((p) => homePlayers.some((hp) => hp.id === p.playerId))
+                      .sort((a, b) => b.rating - a.rating)
+                      .map((perf) => (
+                        <tr key={perf.playerId}>
+                          <td>{perf.playerName}</td>
+                          <td>{perf.position}</td>
+                          <td>{perf.minutesPlayed}'</td>
+                          <td>
+                            {perf.goals}/{perf.assists}
+                          </td>
+                          <td>
+                            {perf.yellowCards > 0 && '🟨'}
+                            {perf.redCards > 0 && '🟥'}
+                          </td>
+                          <td>
+                            <span
+                              className={`rating-badge ${perf.rating >= 7 ? 'rating-excellent' : perf.rating >= 5 ? 'rating-average' : 'rating-poor'}`}
+                            >
+                              {perf.rating.toFixed(1)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+
+                <h4>{awayTeam.name}</h4>
+                <table className="player-ratings-table">
+                  <thead>
+                    <tr>
+                      <th>Player</th>
+                      <th>Position</th>
+                      <th>Min</th>
+                      <th>G/A</th>
+                      <th>Cards</th>
+                      <th>Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {playerPerformances
+                      .filter((p) => awayPlayers.some((ap) => ap.id === p.playerId))
+                      .sort((a, b) => b.rating - a.rating)
+                      .map((perf) => (
+                        <tr key={perf.playerId}>
+                          <td>{perf.playerName}</td>
+                          <td>{perf.position}</td>
+                          <td>{perf.minutesPlayed}'</td>
+                          <td>
+                            {perf.goals}/{perf.assists}
+                          </td>
+                          <td>
+                            {perf.yellowCards > 0 && '🟨'}
+                            {perf.redCards > 0 && '🟥'}
+                          </td>
+                          <td>
+                            <span
+                              className={`rating-badge ${perf.rating >= 7 ? 'rating-excellent' : perf.rating >= 5 ? 'rating-average' : 'rating-poor'}`}
+                            >
+                              {perf.rating.toFixed(1)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

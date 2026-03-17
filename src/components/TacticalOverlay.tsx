@@ -68,6 +68,8 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
   const [defensiveLine, setDefensiveLine] = useState<'low' | 'medium' | 'high'>(
     (currentTactics.defensiveLine as 'low' | 'medium' | 'high') || 'medium'
   );
+  const [selectedPlayerOut, setSelectedPlayerOut] = useState<number | null>(null);
+  const [selectedPlayerIn, setSelectedPlayerIn] = useState<number | null>(null);
 
   if (!isVisible) return null;
 
@@ -235,7 +237,14 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
               <div className="substitution-pairs">
                 <div className="form-group">
                   <label>Player to Substitute OUT</label>
-                  <select className="substitution-select">
+                  <select
+                    className="substitution-select"
+                    value={selectedPlayerOut || ''}
+                    onChange={(e) =>
+                      setSelectedPlayerOut(e.target.value ? Number(e.target.value) : null)
+                    }
+                  >
+                    <option value="">Select player...</option>
                     {homePlayers.slice(0, 11).map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name} ({p.position})
@@ -245,7 +254,14 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                 </div>
                 <div className="form-group">
                   <label>Player to Substitute IN</label>
-                  <select className="substitution-select">
+                  <select
+                    className="substitution-select"
+                    value={selectedPlayerIn || ''}
+                    onChange={(e) =>
+                      setSelectedPlayerIn(e.target.value ? Number(e.target.value) : null)
+                    }
+                  >
+                    <option value="">Select player...</option>
                     {homePlayers.slice(11).map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name} ({p.position})
@@ -254,10 +270,21 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                   </select>
                 </div>
               </div>
-              <button className="substitution-btn">Make Substitution</button>
-              <p className="note">
-                Note: Full substitution logic with fatigue tracking coming soon
-              </p>
+              <button
+                className="substitution-btn"
+                onClick={() => {
+                  if (selectedPlayerOut && selectedPlayerIn) {
+                    onSubstitution(selectedPlayerOut, selectedPlayerIn);
+                    setSelectedPlayerOut(null);
+                    setSelectedPlayerIn(null);
+                  } else {
+                    alert('Please select both players for substitution');
+                  }
+                }}
+              >
+                Make Substitution
+              </button>
+              <p className="note">Note: Substitutions affect player fatigue and tactical setup</p>
             </div>
           )}
         </div>

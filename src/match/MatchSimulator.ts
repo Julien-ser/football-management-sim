@@ -149,6 +149,10 @@ export class MatchSimulator {
     });
   }
 
+  getPlayerPerformance(): PlayerPerformance[] {
+    return Array.from(this.playerPerformance.values());
+  }
+
   getEventManager(): EventManager {
     return this.eventManager;
   }
@@ -213,6 +217,62 @@ export class MatchSimulator {
     return team === 'home'
       ? this.homeTacticsEngine.getModifiers()
       : this.awayTacticsEngine.getModifiers();
+  }
+
+  /**
+   * Manually substitute a player during the match
+   * Returns true if substitution successful, false otherwise
+   */
+  substitute(team: 'home' | 'away', playerOutId: number, playerInId: number): boolean {
+    const teamAI = team === 'home' ? this.homeTeamAI : this.awayTeamAI;
+    const teamPlayers = team === 'home' ? this.homePlayers : this.awayPlayers;
+
+    // Check if substitution is allowed
+    if (
+      (team === 'home' ? this.homeSubstitutionsUsed : this.awaySubstitutionsUsed) >=
+      this.maxSubstitutionsPerTeam
+    ) {
+      return false;
+    }
+
+    // Check if player out is currently playing and not already substituted
+    const startingXI = teamAI.getStartingXI();
+    const playerOutAssignment = startingXI.find((a) => a.playerId === playerOutId);
+    if (!playerOutAssignment || this.unavailablePlayers.has(playerOutId)) {
+      return false;
+    }
+
+    // Check if player in is a valid substitute (not already playing, not unavailable)
+    const playerIn = teamPlayers.find((p) => p.id === playerInId);
+    if (
+      !playerIn ||
+      this.unavailablePlayers.has(playerInId) ||
+      startingXI.some((a) => a.playerId === playerInId)
+    ) {
+      return false;
+    }
+
+    // Get player names for event details
+    const playerOut = teamPlayers.find((p) => p.id === playerOutId);
+
+    // Perform substitution using TeamAI's replacePlayer method
+    const success = teamAI.replacePlayer(playerOutId, playerInId);
+    if (!success) return false;
+
+    // Mark player out as unavailable for further play
+    this.unavailablePlayers.add(playerOutId);
+    teamAI.recordSubstitution();
+
+    // Emit substitution event
+    this.emitEvent({
+      minute: this.currentMinute,
+      type: 'substitution',
+      teamId: team === 'home' ? this.homeTeam.id : this.awayTeam.id,
+      playerId: playerOutId,
+      details: `Substitution: ${playerOut?.name || 'Player'} off, ${playerIn.name} on`,
+    });
+
+    return true;
   }
 
   async simulate(speed: number = 0): Promise<Match> {
@@ -536,6 +596,22 @@ export class MatchSimulator {
           ? `Goal! ${scorer.name}${assist ? ` assisted by ${assist.name}` : ''} scores!`
           : 'Goal!';
 
+        // Record goal and potential assist in performance tracking
+        if (scorer) {
+          const scorerPerf = this.playerPerformance.get(scorer.id);
+          if (scorerPerf) {
+            scorerPerf.goals++;
+            scorerPerf.minutesPlayed = Math.max(scorerPerf.minutesPlayed, minute);
+          }
+        }
+        if (assist) {
+          const assistPerf = this.playerPerformance.get(assist.id);
+          if (assistPerf) {
+            assistPerf.assists++;
+            assistPerf.minutesPlayed = Math.max(assistPerf.minutesPlayed, minute);
+          }
+        }
+
         // Always increment score and stats for a goal event
         this.stats.shots[attackingTeam]++;
         this.stats.shotsOnTarget[attackingTeam]++;
@@ -675,6 +751,28 @@ export class MatchSimulator {
   private processEvent(event: EventManagerMatchEvent): void {
     this.events.push(event);
 
+    // Update player performance stats based on event
+    if (event.playerId) {
+      const perf = this.playerPerformance.get(event.playerId);
+      if (perf) {
+        perf.minutesPlayed = Math.max(perf.minutesPlayed, event.minute);
+
+        switch (event.type) {
+          case 'goal':
+            if (event.teamId === this.homeTeam.id) {
+              perf.goals++;
+            }
+            break;
+          case 'yellow-card':
+            perf.yellowCards++;
+            break;
+          case 'red-card':
+            perf.redCards++;
+            break;
+        }
+      }
+    }
+
     // Track yellow cards and convert to red on second yellow
     if (event.type === 'yellow-card' && event.playerId) {
       const currentYellow = this.playerYellowCards.get(event.playerId) || 0;
@@ -693,6 +791,12 @@ export class MatchSimulator {
         this.emitEvent(redCardEvent);
         this.unavailablePlayers.add(event.playerId);
         this.stats.redCards[event.teamId === this.homeTeam.id ? 'home' : 'away']++;
+
+        // Update performance for red card from second yellow
+        const perf = this.playerPerformance.get(event.playerId);
+        if (perf) {
+          perf.redCards++;
+        }
       }
     }
 
@@ -850,6 +954,9 @@ export class MatchSimulator {
   }
 
   private buildMatchResult(): Match {
+    // Calculate final player ratings before building result
+    this.calculatePlayerRatings();
+
     const duration = this.config.matchDuration + this.getExtraTime();
 
     return {
@@ -918,5 +1025,42 @@ export class MatchSimulator {
         },
       },
     };
+  }
+
+  /**
+   * Calculate final player ratings based on match performance
+   */
+  private calculatePlayerRatings(): void {
+    const matchDuration = this.config.matchDuration + this.getExtraTime();
+
+    this.playerPerformance.forEach((perf, playerId) => {
+      // Base rating from player's inherent ability (normalized to 0-10 scale)
+      const player = [...this.homePlayers, ...this.awayPlayers].find((p) => p.id === playerId);
+      let rating = player ? player.currentRating / 10 : 5.0; // Convert 0-100 to 0-10
+
+      // Minutes played factor (starting players who played most get a slight boost)
+      if (perf.minutesPlayed >= matchDuration * 0.8) {
+        rating += 0.3;
+      } else if (perf.minutesPlayed < matchDuration * 0.45) {
+        rating -= 0.2; // Players substituted early get slight penalty
+      }
+
+      // Goals scored (+1.5 per goal, +2 for hat-trick)
+      rating += perf.goals * 1.5;
+      if (perf.goals >= 3) rating += 0.5; // Bonus for hat-trick
+
+      // Assists (+0.75 per assist)
+      rating += perf.assists * 0.75;
+
+      // Cards: Yellow (-0.3), Red (-1.5)
+      rating -= perf.yellowCards * 0.3;
+      rating -= perf.redCards * 1.5;
+
+      // Ensure rating is within 0-10 bounds
+      rating = Math.max(0, Math.min(10, rating));
+
+      // Round to 1 decimal place
+      perf.rating = Math.round(rating * 10) / 10;
+    });
   }
 }
