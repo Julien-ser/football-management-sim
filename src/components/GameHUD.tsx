@@ -8,7 +8,7 @@ import CalendarPanel from './CalendarPanel';
 import './App.css';
 
 const GameHUD: React.FC = () => {
-  const { currentTeam } = useGame();
+  const { currentTeam, setCurrentScreen } = useGame();
 
   if (!currentTeam) {
     return (
@@ -49,6 +49,7 @@ const GameHUD: React.FC = () => {
         <section className="center-panel">
           <ClubStatusPanel team={currentTeam} />
           <div className="quick-actions">
+            <button onClick={() => setCurrentScreen('saveGame')}>💾 Save Game</button>
             <button>📋 View Full Squad</button>
             <button>🎯 Set Tactics</button>
             <button>⚽ Next Match</button>

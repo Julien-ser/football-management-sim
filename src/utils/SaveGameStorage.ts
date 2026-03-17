@@ -23,6 +23,7 @@ export interface SavedGame {
 }
 
 const STORAGE_PREFIX = 'football_manager_save_';
+const AUTO_SAVE_KEY = 'football_manager_auto_save';
 const MAX_SAVE_SLOTS = 10;
 
 export class SaveGameStorage {
@@ -114,5 +115,55 @@ export class SaveGameStorage {
       }
     }
     return count;
+  }
+
+  /**
+   * Save auto-save data to a special key
+   */
+  static autoSaveGame(gameState: Partial<SavedGame>): boolean {
+    try {
+      const serialized = JSON.stringify(gameState);
+      localStorage.setItem(AUTO_SAVE_KEY, serialized);
+      return true;
+    } catch (error) {
+      console.error('Failed to auto-save game:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Load auto-save data
+   */
+  static loadAutoSave(): SavedGame | null {
+    try {
+      const serialized = localStorage.getItem(AUTO_SAVE_KEY);
+      if (!serialized) {
+        return null;
+      }
+      return JSON.parse(serialized) as SavedGame;
+    } catch (error) {
+      console.error('Failed to load auto-save:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if auto-save exists
+   */
+  static hasAutoSave(): boolean {
+    return localStorage.getItem(AUTO_SAVE_KEY) !== null;
+  }
+
+  /**
+   * Delete auto-save
+   */
+  static deleteAutoSave(): boolean {
+    try {
+      localStorage.removeItem(AUTO_SAVE_KEY);
+      return true;
+    } catch (error) {
+      console.error('Failed to delete auto-save:', error);
+      return false;
+    }
   }
 }

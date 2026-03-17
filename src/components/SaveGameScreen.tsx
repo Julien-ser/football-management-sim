@@ -1,21 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useGame } from '../contexts/GameContext';
-import { SaveGameStorage } from '../utils/SaveGameStorage';
-import { SavedGame } from '../utils/SaveGameStorage';
+import { SaveGameStorage, SavedGame } from '../utils/SaveGameStorage';
 import './Menu.css';
 
 const SaveGameScreen: React.FC = () => {
-  const { settings, currentTeam, teams, players, competitions, matches, calendar, currentTactics } =
-    useGame();
+  const {
+    settings,
+    currentTeam,
+    teams,
+    players,
+    competitions,
+    matches,
+    calendar,
+    currentTactics,
+    setCurrentScreen,
+    setTeams,
+    setPlayers,
+    setCompetitions,
+    setMatches,
+    setCalendar,
+    setCurrentTeam,
+    updateSettings,
+    setCurrentTactics,
+    currentScreen,
+  } = useGame();
   const [saveName, setSaveName] = useState<string>('');
   const [slotInfo, setSlotInfo] = useState<Array<{ slot: number; game: SavedGame | null }>>([]);
   const [message, setMessage] = useState<string>('');
 
-  // Load save metadata on mount
+  // Determine screen type for title
+  const isLoadMode = currentScreen === 'loadGame';
+  const isSaveMode = currentScreen === 'saveGame';
+
+  // Load save metadata on mount and when screen changes
   useEffect(() => {
     const metadata = SaveGameStorage.getAllSaveMetadata();
     setSlotInfo(metadata);
-  }, []);
+  }, [currentScreen]);
 
   const getCurrentGameState = (): Partial<SavedGame> => {
     const gameState: Partial<SavedGame> = {
@@ -62,8 +83,32 @@ const SaveGameScreen: React.FC = () => {
   const handleLoad = (slot: number) => {
     const save = SaveGameStorage.loadGame(slot);
     if (save) {
+      // Restore all game state into context
+      setTeams(save.teams);
+      setPlayers(save.players);
+      setCompetitions(save.competitions);
+      setMatches(save.matches);
+      setCurrentTactics(save.currentTactics);
+      updateSettings(save.settings);
+
+      // Restore current team if available
+      if (save.currentTeamId) {
+        const team = save.teams.find((t) => t.id === save.currentTeamId);
+        if (team) {
+          setCurrentTeam(team);
+        }
+      }
+
+      // Restore calendar if available
+      if (save.calendar) {
+        setCalendar(save.calendar);
+      }
+
       setMessage(`Loaded save from slot ${slot} (${save.saveName}).`);
-      // TODO: Actually load the game state into context
+      // Navigate to game screen after successful load
+      setTimeout(() => {
+        setCurrentScreen('game');
+      }, 500);
     } else {
       setMessage(`No save found in slot ${slot}.`);
     }
@@ -96,7 +141,19 @@ const SaveGameScreen: React.FC = () => {
   };
 
   const handleBack = () => {
-    window.history.back();
+    // Go back to main menu if not in game, otherwise back to game
+    if (currentTeam) {
+      setCurrentScreen('game');
+    } else {
+      setCurrentScreen('mainMenu');
+    }
+  };
+
+  // Get title based on mode
+  const getTitle = () => {
+    if (isLoadMode) return 'Load Game';
+    if (isSaveMode) return 'Save Game';
+    return 'Save / Load Game';
   };
 
   return (
@@ -105,7 +162,7 @@ const SaveGameScreen: React.FC = () => {
         <button className="back-button" onClick={handleBack}>
           ← Back
         </button>
-        <h1>Save / Load Game</h1>
+        <h1>{getTitle()}</h1>
       </div>
 
       <div className="save-name-section" style={{ marginBottom: '1.5rem' }}>

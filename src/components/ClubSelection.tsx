@@ -4,7 +4,7 @@ import { Team } from '../models/Team';
 import './Menu.css';
 
 const ClubSelection: React.FC = () => {
-  const { teams, setCurrentTeam, setCurrentScreen } = useGame();
+  const { teams, setTeams, setCurrentTeam, setCurrentScreen } = useGame();
   const [selectedLeague, setSelectedLeague] = useState<string>('all');
   const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
 
@@ -83,8 +83,8 @@ const ClubSelection: React.FC = () => {
         boardConfidence: 95,
       },
     ];
-    // In a real app, we'd update the context - but teams is readonly from context
-    // For now, we'll just display sample data
+    // Update the context with sample teams
+    setTeams(sampleTeams);
     setFilteredTeams(sampleTeams);
   };
 

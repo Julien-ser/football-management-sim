@@ -3,6 +3,7 @@ import { useGame } from './contexts/GameContext';
 import MainMenu from './components/MainMenu';
 import ClubSelection from './components/ClubSelection';
 import SettingsPanel from './components/SettingsPanel';
+import SaveGameScreen from './components/SaveGameScreen';
 import GameHUD from './components/GameHUD';
 import MatchDayContainer from './components/MatchDayContainer';
 import './styles/App.css';
@@ -35,6 +36,9 @@ const App: React.FC = () => {
         return <ClubSelection />;
       case 'settings':
         return <SettingsPanel />;
+      case 'loadGame':
+      case 'saveGame':
+        return <SaveGameScreen />;
       case 'game':
       default:
         return currentTeam ? <GameHUD /> : <MainMenu />;

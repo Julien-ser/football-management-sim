@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Team, Player, Competition, Match } from '../models';
 import { createBudgetManager } from '../transfer/BudgetManager';
 import { LeagueTable } from '../competition/LeagueTable';
@@ -6,6 +6,7 @@ import { Calendar } from '../competition/Calendar';
 import { MatchSimulator } from '../match/MatchSimulator';
 import { Tactics, PlayerInstruction } from '../models/Team';
 import { MatchEvent as SimulationMatchEvent } from '../match/events';
+import { SaveGameStorage, SavedGame } from '../utils/SaveGameStorage';
 
 interface GameSettings {
   graphicsQuality: 'low' | 'medium' | 'high';
@@ -127,6 +128,60 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const updateSettings = (newSettings: Partial<GameSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
+
+  // Keep a ref of the latest game state for auto-save
+  const gameStateRef = React.useRef({
+    currentTeam,
+    teams,
+    players,
+    competitions,
+    matches,
+    calendar,
+    currentTactics,
+    settings,
+  });
+
+  // Update ref whenever state changes
+  useEffect(() => {
+    gameStateRef.current = {
+      currentTeam,
+      teams,
+      players,
+      competitions,
+      matches,
+      calendar,
+      currentTactics,
+      settings,
+    };
+  }, [currentTeam, teams, players, competitions, matches, calendar, currentTactics, settings]);
+
+  // Auto-save effect
+  useEffect(() => {
+    if (!settings.autoSave) return;
+
+    const intervalMs = settings.autoSaveInterval * 60 * 1000;
+    const interval = setInterval(() => {
+      const state = gameStateRef.current;
+      const autoSaveData: Partial<SavedGame> = {
+        version: '1.0.0',
+        timestamp: Date.now(),
+        saveName: `Auto-Save ${new Date().toLocaleTimeString()}`,
+        teams: state.teams,
+        players: state.players,
+        competitions: state.competitions,
+        matches: state.matches,
+        calendar: state.calendar ?? undefined,
+        currentTeamId: state.currentTeam?.id,
+        settings: state.settings,
+        currentTactics: state.currentTactics,
+        daysPlayed: 0,
+        season: '2025-26',
+      };
+      SaveGameStorage.autoSaveGame(autoSaveData);
+    }, intervalMs);
+
+    return () => clearInterval(interval);
+  }, [settings.autoSave, settings.autoSaveInterval]);
 
   const updateLeagueTable = (competition: Competition, teamsList: Team[]) => {
     const table = new LeagueTable(competition, teamsList);

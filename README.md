@@ -164,6 +164,12 @@ Run tests with: `npm test`
 
 This is a solo development project for now. Contributions not accepted unless specified.
 
+## Saving and Loading
+
+- Access **Save Game** from the HUD's quick actions or **Load Game** from the main menu.
+- The game supports 10 manual save slots.
+- Auto-save is enabled by default every 5 minutes (adjustable in Settings).
+
 ## 📄 License
 
 [To be determined]
