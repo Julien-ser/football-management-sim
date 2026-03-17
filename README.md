@@ -8,12 +8,19 @@ Build, manage, and guide your football club through multiple seasons, balancing 
 
 ## 📋 Project Status
 
-**Phase 1: Planning & Setup** (In Progress)
+**Phase 1: Planning & Setup** ✅ Complete
 
 - ✅ Task 1.1: Game Design Document (GDD) - [View docs/GDD.md](docs/GDD.md)
 - ✅ Task 1.2: Development Environment Setup
 - ✅ Task 1.3: Technology Stack Selection - [View docs/ADR-001-technology-stack.md](docs/ADR-001-technology-stack.md)
-  - ✅ Task 1.4: Data Schema & Prototype Models
+- ✅ Task 1.4: Data Schema & Prototype Models
+
+**Phase 2: Core Game Systems** (In Progress)
+
+- ✅ Task 2.1: Match Simulation Engine
+- ✅ Task 2.2: Tactics & Formation System
+- ✅ Task 2.3: Transfer & Squad Management **(Just Completed)**
+- ⏳ Task 2.4: Competition & Calendar System
 
 See [TASKS.md](TASKS.md) for complete task list and progress.
 

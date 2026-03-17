@@ -23,8 +23,9 @@
 - [x] Task 2.2: Implement Tactics & Formation System
   - **Deliverable:** Tactics editor with preset formations (4-4-2, 4-3-3, 3-5-2, etc.), customizable player instructions (defensive/attacking mentality, pressing intensity, passing style), and in-match tactical changes that affect simulation parameters. Must support saving/loading tactical presets.
   - **Status:** Completed on 2026-03-16. Implemented comprehensive tactics system with TacticsEditor, TacticsEngine, TacticsPresets, TeamAI integration, and file persistence for custom presets. All 43 tests passing.
-- [ ] Task 2.3: Develop Transfer & Squad Management
+- [x] Task 2.3: Develop Transfer & Squad Management
   - **Deliverable:** Transfer market system with player search/filtering, scouting reports, bid placement, contract negotiation (wages, bonuses, length), squad registration for competitions, and AI-driven behavior for other clubs. Include budget management with income/expense tracking.
+  - **Status:** Completed on 2026-03-17. Implemented comprehensive transfer system with all components: TransferMarket (search, listings, bids), Scout (scouting reports with ratings/potential), Negotiator (contract negotiation, bid evaluation), SquadRegistration (competition squad management with validation), TransferAI (AI club behavior), and BudgetManager (financial tracking). All 116 transfer tests passing.
 - [ ] Task 2.4: Create Competition & Calendar System
   - **Deliverable:** Multi-competition support (domestic league, domestic cup(s), European competitions: Champions League, Europa League, Conference League) with correct scheduling, fixture generation, qualification rules, and progression logic. Calendar view showing upcoming matches and availability.
 

@@ -345,14 +345,20 @@ export class TransferAI {
    * Decide whether to list a player
    */
   private shouldListPlayer(player: Player): boolean {
-    // Older players more likely to be listed
     const age = this.calculateAge(player.dateOfBirth);
+
+    // PROTECTED: Young high-rated players should NOT be listed
+    if (age < 25 && player.currentRating >= 80) {
+      return false;
+    }
+
+    // Older players more likely to be listed
     if (age > 30) return true;
 
     // Low-rated players more likely to be listed
     if (player.currentRating < 65) return true;
 
-    // Low contract priority (expiring soon)
+    // Contract expiring soon - might be listed
     const monthsUntilExpiry = this.getMonthsUntilExpiry(player.contract.expiryDate);
     if (monthsUntilExpiry <= 12) {
       return Math.random() < 0.5;
