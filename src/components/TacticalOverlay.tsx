@@ -53,24 +53,32 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
   const isHomeTeam = currentTeam?.id === homeTeamId;
   const [activeTab, setActiveTab] = useState<'tactics' | 'substitutions'>('tactics');
   const [formation, setFormation] = useState<string>(currentTactics.formation);
-  const [mentality, setMentality] = useState<Mentality>(currentTactics.mentality);
-  const [pressingIntensity, setPressingIntensity] = useState<string>(
+  const [mentality, setMentality] = useState<'defensive' | 'balanced' | 'attacking'>(
+    currentTactics.mentality
+  );
+  const [pressingIntensity, setPressingIntensity] = useState<'low' | 'medium' | 'high'>(
     currentTactics.pressingIntensity
   );
-  const [passingStyle, setPassingStyle] = useState<string>(currentTactics.passingStyle);
-  const [width, setWidth] = useState<string>(currentTactics.width);
-  const [defensiveLine, setDefensiveLine] = useState<string>(currentTactics.defensiveLine);
+  const [passingStyle, setPassingStyle] = useState<'short' | 'mixed' | 'long'>(
+    currentTactics.passingStyle
+  );
+  const [width, setWidth] = useState<'narrow' | 'balanced' | 'wide'>(
+    currentTactics.width || 'balanced'
+  );
+  const [defensiveLine, setDefensiveLine] = useState<'low' | 'medium' | 'high'>(
+    currentTactics.defensiveLine || 'medium'
+  );
 
   if (!isVisible) return null;
 
   const handleTacticsApply = () => {
     onTacticsChange('home', {
-      formation: formation as Formation,
+      formation: formation,
       mentality,
-      pressingIntensity: pressingIntensity as 'low' | 'medium' | 'high',
-      passingStyle: passingStyle as 'short' | 'mixed' | 'long',
-      width: width as 'narrow' | 'balanced' | 'wide',
-      defensiveLine: defensiveLine as 'low' | 'medium' | 'high',
+      pressingIntensity,
+      passingStyle,
+      width: width,
+      defensiveLine: defensiveLine,
     });
     onClose();
   };
@@ -157,7 +165,9 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                 <label>Pressing Intensity</label>
                 <select
                   value={pressingIntensity}
-                  onChange={(e) => setPressingIntensity(e.target.value)}
+                  onChange={(e) =>
+                    setPressingIntensity(e.target.value as 'low' | 'medium' | 'high')
+                  }
                   className="tactics-select"
                 >
                   {PRESSING_INTENSITIES.map((p) => (
@@ -172,7 +182,7 @@ const TacticalOverlay: React.FC<TacticalOverlayProps> = ({
                 <label>Passing Style</label>
                 <select
                   value={passingStyle}
-                  onChange={(e) => setPassingStyle(e.target.value)}
+                  onChange={(e) => setPassingStyle(e.target.value as 'short' | 'mixed' | 'long')}
                   className="tactics-select"
                 >
                   {PASSING_STYLES.map((p) => (
