@@ -919,3 +919,150 @@ Task 1.2 completed. Development environment set up with:
 
 Ready for Task 1.3.
 📝 Log saved: logs/iteration-3.md
+📊 Token Usage: 8500 / Session: 25500 / 64000
+Unstaged changes after reset:
+M	logs/worker-session-20260316-222853.log
+✅ Changes committed
+To https://github.com/Julien-ser/football-management-sim.git
+   72ae467..7d0b3ac  main -> main
+✅ Pushed to GitHub
+📊 Updated Tasks: 2/16 completed, 14 remaining
+   Next task: Task 1.3: Choose Technology Stack & Libraries...
+📍 Iteration 4 at Mon Mar 16 10:34:39 PM EDT 2026...
+🤖 OpenCode processing: Task 1.3: Choose Technology Stack & Libraries
+[0m
+> build · stepfun/step-3.5-flash:free
+[0m
+Let me check the current project state and complete Task 1.3: Choose Technology Stack & Libraries.
+[0m✱ [0mGlob "*"[90m 100 matches[0m
+[0m→ [0mRead TASKS.md
+[0m
+[0m$ [0mcat .agent_role 2>/dev/null || echo "generic"
+generic
+[0m
+Now let me check the existing project structure to understand what's already been set up:
+[0m→ [0mRead package.json
+[0m→ [0mRead docs/GDD.md[90m [limit=100][0m
+[0m→ [0mRead tsconfig.json
+Now I'll create the Architecture Decision Record (ADR) for Task 1.3. Based on the existing Node.js/TypeScript setup and the GDD requirements, I'll document the technology stack choices:
+[0m
+[0m← [0mWrite docs/ADR-001-technology-stack.md
+Wrote file successfully.
+[0m
+[0m→ [0mRead README.md
+Now let me read the current README and update it with technology stack information:
+Now I'll update the README to reflect the completed technology stack selection:
+[0m
+[0m← [0mEdit README.md
+Index: /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
+===================================================================
+--- /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
++++ /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
+@@ -10,10 +10,10 @@
+ 
+ **Phase 1: Planning & Setup** (In Progress)
+ 
+ - ✅ Task 1.1: Game Design Document (GDD) - [View docs/GDD.md](docs/GDD.md)
+-- ⏳ Task 1.2: Development Environment Setup
+-- ⏳ Task 1.3: Technology Stack Selection
++- ✅ Task 1.2: Development Environment Setup
++- ✅ Task 1.3: Technology Stack Selection - [View docs/ADR-001-technology-stack.md](docs/ADR-001-technology-stack.md)
+ - ⏳ Task 1.4: Data Schema & Prototype Models
+ 
+ See [TASKS.md](TASKS.md) for complete task list and progress.
+ 
+
+[0m
+[0m← [0mEdit README.md
+Index: /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
+===================================================================
+--- /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
++++ /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/README.md
+@@ -31,17 +31,46 @@
+ 
+ The project follows a layered architecture:
+ 
+ ```
+-Presentation Layer (UI)
++Presentation Layer (Console UI → Future: React Web UI)
+     ↓
+ Application Logic (Match Engine, Tactics, Transfer Market, etc.)
+     ↓
+ Data Layer (SQLite database, models, serialization)
+ ```
+ 
+-**Technology Stack:** Node.js/TypeScript (see [Task 1.3](TASKS.md#task-13-choose-technology-stack--libraries) for formal ADR)
++### Technology Stack
+ 
++**Core:**
++
++- **Language:** TypeScript 5.x
++- **Runtime:** Node.js 18+ (LTS)
++- **Database:** SQLite with `better-sqlite3` driver
++- **State/Events:** RxJS for reactive event handling
++
++**Development Tools:**
++
++- **Build:** TypeScript Compiler (`tsc`)
++- **Testing:** Jest + ts-jest
++- **Linting:** ESLint + @typescript-eslint
++- **Formatting:** Prettier
++- **CI/CD:** GitHub Actions (multi-version Node.js testing)
++
++**Future (Phase 3):**
++
++- **UI Framework:** React 18+ (for graphical interface)
++- **Styling:** Tailwind CSS or CSS Modules
++- **Routing:** React Router
++- **State Management:** React Context + hooks (or Zustand)
++
++**External APIs (Optional):**
++
++- football-data.org for real-world data integration
++- OpenFootball datasets for initial data bootstrapping
++
++See the [Architecture Decision Record](docs/ADR-001-technology-stack.md) for detailed rationale.
++
+ See the [Game Design Document](docs/GDD.md) for:
+ 
+ - Complete feature specification
+ - Data models and ER diagrams
+
+[0m
+Now let me mark Task 1.3 as completed in TASKS.md:
+[0m← [0mEdit TASKS.md
+Index: /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/TASKS.md
+===================================================================
+--- /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/TASKS.md
++++ /home/julien/Desktop/Free-Wiggum-opencode/projects/football-management-sim/TASKS.md
+@@ -8,10 +8,11 @@
+   - **Deliverable:** Comprehensive GDD covering core gameplay loops (match simulation, transfers, tactics), feature list (domestic leagues, European competitions, youth academy), UI wireframes, and technical architecture. Must be reviewed and approved.
+   - **Status:** Completed on 2026-03-16. GDD created at `docs/GDD.md` with full specifications including: core gameplay loops, extensive feature list, UI wireframes, technical architecture, ER diagrams, development phases, risk assessment, and success metrics.
+ - [x] Task 1.2: Set Up Development Environment & Project Boilerplate
+   - **Deliverable:** Git repository with proper branching strategy, CI/CD pipeline (GitHub Actions for builds/tests), linting/styling configuration (ESLint/Prettier or equivalent), and basic project structure compilable with "Hello World" output.
+-- [ ] Task 1.3: Choose Technology Stack & Libraries
++- [x] Task 1.3: Choose Technology Stack & Libraries
+   - **Deliverable:** Architecture Decision Record (ADR) documenting chosen libraries (e.g., game engine: Unity/Godot/Pygame; database: SQLite; UI framework: React/Flutter; build system); research on football data APIs (e.g., football-data.org) included.
++  - **Status:** Completed on 2026-03-16. ADR created at `docs/ADR-001-technology-stack.md`. Decision: Node.js/TypeScript stack with SQLite database, RxJS for events, console UI initially (migrating to React in Phase 3). Self-hosted football data with optional API integration.
+ - [ ] Task 1.4: Create Initial Data Schema & Prototype Models
+   - **Deliverable:** ER diagram and initial implementation of core data models (Player, Team, Competition, Match) with basic properties and JSON/YAML serialization; at least 10 sample teams and 100 sample players for prototyping.
+ 
+ ## Phase 2: Core Game Systems
+
+[0m
+Now let me commit and push the changes:
+[0m$ [0mgit add docs/ADR-001-technology-stack.md README.md TASKS.md && git commit -m "feat: complete technology stack selection with ADR documentation" && git push origin main
+[main a8696ac] feat: complete technology stack selection with ADR documentation
+ 3 files changed, 258 insertions(+), 5 deletions(-)
+ create mode 100644 docs/ADR-001-technology-stack.md
+To https://github.com/Julien-ser/football-management-sim.git
+   7d0b3ac..a8696ac  main -> main
+[0m
+Perfect! Task 1.3 completed. The technology stack has been documented with an Architecture Decision Record covering:
+- Rendering/UI: Console-based initially → React migration in Phase 3
+- Database: SQLite with better-sqlite3
+- State management: RxJS for reactive events
+- External APIs: Self-hosted data with optional football-data.org integration
+
+All changes committed and pushed. Ready for Task 1.4.
+📝 Log saved: logs/iteration-4.md
