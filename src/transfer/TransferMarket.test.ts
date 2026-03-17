@@ -337,7 +337,7 @@ describe('TransferMarket', () => {
     it('should get pending bids for seller', () => {
       const sellerBids = transferMarket.getBidsBySeller(1);
       expect(sellerBids.length).toBe(1);
-      expect(sellerBids[0].playerId).toBe(2);
+      expect(sellerBids[0].playerId).toBe(1); // Team 1 is selling player 1
     });
   });
 

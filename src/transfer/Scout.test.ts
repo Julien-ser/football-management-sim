@@ -107,8 +107,8 @@ describe('Scout', () => {
   });
 
   it('should provide position-specific strength analysis', () => {
-    const goalkeeper = createTestPlayer(12, 1, 'goalkeeper', 80);
-    const report = scout.scoutPlayer(goalkeeper, team);
+    const defender = createTestPlayer(12, 1, 'center-back', 80);
+    const report = scout.scoutPlayer(defender, team);
 
     expect(report.strengths).toContain('Solid defender');
   });

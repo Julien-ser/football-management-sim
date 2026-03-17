@@ -1,5 +1,6 @@
 import { SquadRegistrationManager } from './SquadRegistration';
 import { Player, Team, Competition } from '../models';
+import { SquadSlot } from './types';
 
 // Helper to create test player
 function createTestPlayer(id: number, teamId: number, position: string = 'striker'): Player {
