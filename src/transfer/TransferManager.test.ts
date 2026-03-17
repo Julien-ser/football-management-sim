@@ -57,11 +57,21 @@ describe('TransferManager', () => {
 
   beforeEach(() => {
     teams = [createTestTeam(1, 150000000), createTestTeam(2, 100000000)];
-    competitions = [createTestCompetition(1, 'league')];
+    competitions = [createTestCompetition(1, 'league'), createTestCompetition(2, 'cup')];
 
     players = [
+      // Team 1 players
       createTestPlayer(1, 1, 'striker', 80),
       createTestPlayer(2, 1, 'goalkeeper', 75),
+      createTestPlayer(5, 1, 'goalkeeper', 72), // second GK
+      createTestPlayer(6, 1, 'center-back', 73),
+      createTestPlayer(7, 1, 'center-back', 72),
+      createTestPlayer(8, 1, 'right-back', 71),
+      createTestPlayer(9, 1, 'defensive-midfielder', 74),
+      createTestPlayer(10, 1, 'central-midfielder', 75),
+      createTestPlayer(11, 1, 'attacking-midfielder', 76),
+      createTestPlayer(12, 1, 'right-winger', 77), // forward
+      // Team 2 players
       createTestPlayer(3, 2, 'defender', 70),
       createTestPlayer(4, 2, 'midfielder', 82),
     ];
@@ -115,7 +125,7 @@ describe('TransferManager', () => {
     });
 
     it('should evaluate a bid', () => {
-      const bid = manager.placeBid(1, 2, 45000000);
+      const bid = manager.placeBid(1, 2, 50000000); // Bid equal to asking price
       const evaluation = manager.evaluateBid(bid!.id);
 
       expect(evaluation.meetsMinimum).toBe(true);

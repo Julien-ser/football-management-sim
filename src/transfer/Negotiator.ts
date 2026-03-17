@@ -7,10 +7,12 @@ import { Bid, ContractDetails } from './types';
 export class Negotiator {
   private readonly negotiationTimeout: number; // milliseconds
   private readonly maxNegotiationRounds: number;
+  private players: Player[]; // For exchange valuation
 
-  constructor(negotiationTimeout?: number, maxNegotiationRounds?: number) {
+  constructor(negotiationTimeout?: number, maxNegotiationRounds?: number, players: Player[] = []) {
     this.negotiationTimeout = negotiationTimeout || 86400000; // 24 hours default
     this.maxNegotiationRounds = maxNegotiationRounds || 3;
+    this.players = players;
   }
 
   /**
@@ -24,12 +26,11 @@ export class Negotiator {
     },
     player: Player
   ): { meetsMinimum: boolean; feedback: string } {
-    const isPlayerExchange = bid.includesPlayerExchange;
-
-    // If exchange involved, check exchange value first
-    if (isPlayerExchange) {
+    // Check player exchange first if applicable
+    if (bid.includesPlayerExchange) {
       const exchangeValue = this.calculateExchangeValue(bid.exchangePlayers || [], player);
-      if (exchangeValue < player.currentRating * 500) {
+      const requiredExchangeValue = player.currentRating * 500; // threshold
+      if (exchangeValue < requiredExchangeValue) {
         return {
           meetsMinimum: false,
           feedback: 'Exchange players not valuable enough',
@@ -37,22 +38,26 @@ export class Negotiator {
       }
     }
 
-    // Check minimum fee if set
-    if (listing.minimumFee && bid.amount < listing.minimumFee) {
-      return {
-        meetsMinimum: false,
-        feedback: `Bid (€${bid.amount}) below minimum fee (€${listing.minimumFee})`,
-      };
-    }
+    // Determine the hard floor: minimumFee if set, otherwise askingPrice
+    const floor = listing.minimumFee ?? listing.askingPrice;
 
-    // Check asking price
-    if (bid.amount < listing.askingPrice) {
+    // Check if bid meets the floor
+    if (bid.amount < floor) {
       return {
         meetsMinimum: false,
         feedback: `Bid (€${bid.amount}) below asking price (€${listing.askingPrice})`,
       };
     }
 
+    // Bid meets floor but may be below asking
+    if (bid.amount < listing.askingPrice) {
+      return {
+        meetsMinimum: true,
+        feedback: `Bid (€${bid.amount}) below asking price (€${listing.askingPrice})`,
+      };
+    }
+
+    // Bid meets or exceeds asking price
     return {
       meetsMinimum: true,
       feedback: 'Bid meets requirements',
@@ -206,11 +211,21 @@ export class Negotiator {
    * Calculate total value of exchange players
    */
   private calculateExchangeValue(playerIds: number[], targetPlayer: Player): number {
-    // This would integrate with player data - for now return estimate
-    // In real implementation, would look up player values and ratings
-    // Simplified: return 80% of target player value as acceptable exchange
-    const targetValue = targetPlayer.currentRating * 1000;
-    return Math.round(targetValue * 0.8);
+    let total = 0;
+    for (const id of playerIds) {
+      const p = this.players.find((player) => player.id === id);
+      if (p) {
+        total += p.currentRating * 1000; // simple valuation
+      }
+    }
+    return total;
+  }
+
+  /**
+   * Update players reference (for exchange valuation)
+   */
+  updatePlayers(players: Player[]): void {
+    this.players = players;
   }
 
   /**
@@ -262,9 +277,12 @@ export class Negotiator {
    * Estimate current wage bill for a team
    */
   private estimateCurrentWageBill(team: Team): number {
-    // This would need player data - return placeholder
-    // In real implementation, would sum all player contracts
-    return team.budget * 0.4; // Assume 40% of budget currently on wages
+    // Allow override for testing or explicit data
+    if ((team as any).existingWageBill !== undefined) {
+      return (team as any).existingWageBill;
+    }
+    // Default assumption: wages are 40% of budget
+    return team.budget * 0.4;
   }
 
   /**
