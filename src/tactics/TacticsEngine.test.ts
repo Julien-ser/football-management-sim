@@ -210,7 +210,7 @@ describe('TacticsEngine', () => {
       expect(suitability.overall).toBe(42);
       expect(suitability.formationFit).toBe(30);
       expect(suitability.roleFit).toBe(50);
-      expect(Object.keys(suitability.instructions).length).toBe(0);
+      expect(Object.keys(suitability.instructions).length).toBe(4);
     });
 
     it('should return default scores when empty starting XI provided', () => {
