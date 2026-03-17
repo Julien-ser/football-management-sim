@@ -20,7 +20,7 @@ Build, manage, and guide your football club through multiple seasons, balancing 
 - ✅ Task 2.1: Match Simulation Engine
 - ✅ Task 2.2: Tactics & Formation System
 - ✅ Task 2.3: Transfer & Squad Management **(Just Completed)**
-- ⏳ Task 2.4: Competition & Calendar System
+- ✅ Task 2.4: Competition & Calendar System
 
 See [TASKS.md](TASKS.md) for complete task list and progress.
 

@@ -7,7 +7,32 @@
       "country": "Spain",
       "teams": [1, 2],
       "season": "2025-26",
-      "currentMatchday": 1
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-08-01",
+      "seasonEndDate": "2026-05-31",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 2, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 3, "competitionType": "europa-league", "stage": "group_stage" },
+          { "position": 4, "competitionType": "conference-league", "stage": "qualifying" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
     },
     {
       "id": 2,
@@ -16,7 +41,32 @@
       "country": "England",
       "teams": [3, 4],
       "season": "2025-26",
-      "currentMatchday": 1
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-08-01",
+      "seasonEndDate": "2026-05-31",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 2, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 3, "competitionType": "europa-league", "stage": "group_stage" },
+          { "position": 4, "competitionType": "conference-league", "stage": "qualifying" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
     },
     {
       "id": 3,
@@ -25,7 +75,32 @@
       "country": "Germany",
       "teams": [5, 6],
       "season": "2025-26",
-      "currentMatchday": 1
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-08-01",
+      "seasonEndDate": "2026-05-31",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 2, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 3, "competitionType": "europa-league", "stage": "group_stage" },
+          { "position": 4, "competitionType": "conference-league", "stage": "qualifying" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
     },
     {
       "id": 4,
@@ -34,7 +109,32 @@
       "country": "France",
       "teams": [7, 8],
       "season": "2025-26",
-      "currentMatchday": 1
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-08-01",
+      "seasonEndDate": "2026-05-31",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 2, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 3, "competitionType": "europa-league", "stage": "group_stage" },
+          { "position": 4, "competitionType": "conference-league", "stage": "qualifying" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
     },
     {
       "id": 5,
@@ -43,7 +143,188 @@
       "country": "Italy",
       "teams": [9, 10],
       "season": "2025-26",
-      "currentMatchday": 1
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-08-01",
+      "seasonEndDate": "2026-05-31",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 2, "competitionType": "champions-league", "stage": "group_stage" },
+          { "position": 3, "competitionType": "europa-league", "stage": "group_stage" },
+          { "position": 4, "competitionType": "conference-league", "stage": "qualifying" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
+    },
+    {
+      "id": 6,
+      "name": "Copa del Rey",
+      "type": "cup",
+      "country": "Spain",
+      "teams": [1, 2],
+      "season": "2025-26",
+      "currentMatchday": 1,
+      "format": "single_elimination",
+      "seasonStartDate": "2025-10-01",
+      "seasonEndDate": "2026-04-30",
+      "currentStage": "qualifying",
+      "rules": {
+        "pointsPerWin": 0,
+        "pointsPerDraw": 0,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "europa-league", "stage": "group_stage" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 1,
+        "awayGoalsRule": false,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
+    },
+    {
+      "id": 7,
+      "name": "FA Cup",
+      "type": "cup",
+      "country": "England",
+      "teams": [3, 4],
+      "season": "2025-26",
+      "currentMatchday": 1,
+      "format": "single_elimination",
+      "seasonStartDate": "2025-10-01",
+      "seasonEndDate": "2026-05-01",
+      "currentStage": "qualifying",
+      "rules": {
+        "pointsPerWin": 0,
+        "pointsPerDraw": 0,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "europa-league", "stage": "group_stage" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "goal_difference", "descending": true },
+          { "order": 2, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 1,
+        "awayGoalsRule": false,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
+    },
+    {
+      "id": 8,
+      "name": "UEFA Champions League",
+      "type": "champions-league",
+      "country": "Europe",
+      "teams": [1, 2, 3, 4, 5, 6, 7, 8],
+      "season": "2025-26",
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-09-01",
+      "seasonEndDate": "2026-05-01",
+      "currentStage": "league",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [],
+        "relegationSpots": 2,
+        "tiebreakers": [
+          { "order": 1, "criterion": "head_to_head", "descending": true },
+          { "order": 2, "criterion": "goal_difference", "descending": true },
+          { "order": 3, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
+    },
+    {
+      "id": 9,
+      "name": "UEFA Europa League",
+      "type": "europa-league",
+      "country": "Europe",
+      "teams": [9, 10],
+      "season": "2025-26",
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-09-15",
+      "seasonEndDate": "2026-05-22",
+      "currentStage": "group_stage",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "champions-league", "stage": "round_of_16" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "head_to_head", "descending": true },
+          { "order": 2, "criterion": "goal_difference", "descending": true },
+          { "order": 3, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
+    },
+    {
+      "id": 10,
+      "name": "UEFA Conference League",
+      "type": "conference-league",
+      "country": "Europe",
+      "teams": [],
+      "season": "2025-26",
+      "currentMatchday": 1,
+      "format": "round_robin",
+      "seasonStartDate": "2025-09-15",
+      "seasonEndDate": "2026-05-29",
+      "currentStage": "group_stage",
+      "rules": {
+        "pointsPerWin": 3,
+        "pointsPerDraw": 1,
+        "pointsPerLoss": 0,
+        "qualificationSpots": [
+          { "position": 1, "competitionType": "europa-league", "stage": "group_stage" }
+        ],
+        "relegationSpots": 0,
+        "tiebreakers": [
+          { "order": 1, "criterion": "head_to_head", "descending": true },
+          { "order": 2, "criterion": "goal_difference", "descending": true },
+          { "order": 3, "criterion": "goals_scored", "descending": true }
+        ],
+        "aggregateLegs": 2,
+        "awayGoalsRule": true,
+        "extraTime": true,
+        "penalties": true
+      },
+      "stages": []
     }
   ]
 }

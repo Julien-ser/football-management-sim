@@ -63,8 +63,10 @@ export interface GroupStanding {
 }
 
 export interface FixturePair {
+  id: string;
   homeTeamId: number;
   awayTeamId: number;
+  matchIds: number[]; // IDs of matches in this pairing (1 or 2 legs)
   aggregateScore?: { home: number; away: number };
   winnerId?: number;
   nextStagePairId?: string; // Links to next round
