@@ -3,6 +3,9 @@ import { Team, Player, Competition, Match } from '../models';
 import { createBudgetManager } from '../transfer/BudgetManager';
 import { LeagueTable } from '../competition/LeagueTable';
 import { Calendar } from '../competition/Calendar';
+import { MatchSimulator } from '../match/MatchSimulator';
+import { Tactics, PlayerInstruction } from '../models/Team';
+import { MatchEvent as SimulationMatchEvent } from '../match/events';
 
 interface GameState {
   currentTeam: Team | null;
@@ -23,6 +26,31 @@ interface GameState {
   setCalendar: (calendar: Calendar) => void;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
+  // Match simulation state
+  matchSimulator: MatchSimulator | null;
+  setMatchSimulator: (simulator: MatchSimulator | null) => void;
+  currentMatch: Match | null;
+  setCurrentMatch: (match: Match | null) => void;
+  isMatchInProgress: boolean;
+  setIsMatchInProgress: (inProgress: boolean) => void;
+  matchEvents: SimulationMatchEvent[];
+  setMatchEvents: (events: SimulationMatchEvent[]) => void;
+  homeTeam: Team | null;
+  awayTeam: Team | null;
+  setHomeTeam: (team: Team | null) => void;
+  setAwayTeam: (team: Team | null) => void;
+  currentTactics: Tactics;
+  setCurrentTactics: (tactics: Tactics) => void;
+  updateMatchTactics: (team: 'home' | 'away', tactics: Partial<Tactics>) => void;
+  startMatch: (
+    homeTeam: Team,
+    awayTeam: Team,
+    homePlayers: Player[],
+    awayPlayers: Player[],
+    homeTactics?: Tactics,
+    awayTactics?: Tactics
+  ) => void;
+  endMatch: () => void;
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -43,6 +71,22 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   );
   const [calendar, setCalendar] = useState<Calendar | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  // Match simulation state
+  const [matchSimulator, setMatchSimulator] = useState<MatchSimulator | null>(null);
+  const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
+  const [isMatchInProgress, setIsMatchInProgress] = useState<boolean>(false);
+  const [matchEvents, setMatchEvents] = useState<SimulationMatchEvent[]>([]);
+  const [homeTeam, setHomeTeam] = useState<Team | null>(null);
+  const [awayTeam, setAwayTeam] = useState<Team | null>(null);
+  const [currentTactics, setCurrentTactics] = useState<Tactics>({
+    formation: '4-4-2',
+    mentality: 'balanced',
+    pressingIntensity: 'medium',
+    passingStyle: 'mixed',
+    width: 'balanced',
+    defensiveLine: 'medium',
+    playerInstructions: [],
+  });
 
   const updateLeagueTable = (competition: Competition, teamsList: Team[]) => {
     const table = new LeagueTable(competition, teamsList);
@@ -55,6 +99,65 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const updateBudgetManager = (team: Team) => {
     setBudgetManager(createBudgetManager(team));
+  };
+
+  const updateMatchTactics = (team: 'home' | 'away', tactics: Partial<Tactics>) => {
+    if (matchSimulator) {
+      matchSimulator.updateTactics(team, tactics);
+    }
+    // Update current tactics if the user is managing that team
+    if (team === 'home' && currentTeam && homeTeam && currentTeam.id === homeTeam.id) {
+      setCurrentTactics((prev) => ({ ...prev, ...tactics }));
+    }
+  };
+
+  const startMatch = (
+    home: Team,
+    away: Team,
+    homePlayers: Player[],
+    awayPlayers: Player[],
+    homeTactics?: Tactics,
+    awayTactics?: Tactics
+  ) => {
+    const simulator = new MatchSimulator({
+      homeTeam: home,
+      awayTeam: away,
+      homePlayers,
+      awayPlayers,
+      homeTactics: homeTactics || home.tactics || undefined,
+      awayTactics: awayTactics || away.tactics || undefined,
+    });
+
+    // Subscribe to events using RxJS
+    const subscription = simulator.getEventManager().events$.subscribe((event) => {
+      setMatchEvents((prev) => [...prev, event]);
+    });
+
+    // Store subscription for cleanup
+    (simulator as any)._eventSubscription = subscription;
+
+    setMatchSimulator(simulator);
+    setHomeTeam(home);
+    setAwayTeam(away);
+    setIsMatchInProgress(true);
+    setMatchEvents([]);
+  };
+
+  const endMatch = () => {
+    if (matchSimulator) {
+      // Cleanup subscription
+      const subscription = (matchSimulator as any)._eventSubscription;
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      matchSimulator.getEventManager().complete();
+      setMatchSimulator(null);
+    }
+    setIsMatchInProgress(false);
+    setCurrentMatch(null);
+    setHomeTeam(null);
+    setAwayTeam(null);
+    setMatchEvents([]);
   };
 
   return (
@@ -78,6 +181,24 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         setCalendar,
         selectedDate,
         setSelectedDate,
+        // Match simulation state
+        matchSimulator,
+        setMatchSimulator,
+        currentMatch,
+        setCurrentMatch,
+        isMatchInProgress,
+        setIsMatchInProgress,
+        matchEvents,
+        setMatchEvents,
+        homeTeam,
+        setHomeTeam,
+        awayTeam,
+        setAwayTeam,
+        currentTactics,
+        setCurrentTactics,
+        updateMatchTactics,
+        startMatch,
+        endMatch,
       }}
     >
       {children}
