@@ -1,0 +1,15 @@
+console.log('🏆 Football Management Simulator');
+console.log('Version: 0.1.0');
+console.log('');
+console.log('Welcome to the early development build!');
+console.log('This is a "Hello World" prototype.');
+console.log('');
+console.log('Next steps:');
+console.log('  - npm install    # Install dependencies');
+console.log('  - npm run build  # Compile TypeScript');
+console.log('  - npm start      # Run the application');
+console.log('');
+console.log('For development:');
+console.log('  - npm run dev    # Watch mode');
+console.log('  - npm test       # Run tests');
+console.log('  - npm run lint   # Check code quality');

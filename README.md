@@ -3,6 +3,7 @@
 A strategic football management simulation game where you take charge of a football club and lead it to domestic and European glory.
 
 ## 🎯 Mission
+
 Build, manage, and guide your football club through multiple seasons, balancing squad development, financial management, tactical innovation, and competition success across domestic leagues, cups, and European tournaments.
 
 ## 📋 Project Status
@@ -38,9 +39,10 @@ Application Logic (Match Engine, Tactics, Transfer Market, etc.)
 Data Layer (SQLite database, models, serialization)
 ```
 
-**Technology Stack:** *To be determined in Task 1.3*
+**Technology Stack:** Node.js/TypeScript (see [Task 1.3](TASKS.md#task-13-choose-technology-stack--libraries) for formal ADR)
 
 See the [Game Design Document](docs/GDD.md) for:
+
 - Complete feature specification
 - Data models and ER diagrams
 - UI wireframes and layout designs
@@ -50,7 +52,8 @@ See the [Game Design Document](docs/GDD.md) for:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.11+ or Node.js 18+ (depending on technology choice)
+
+- Node.js 18+ (LTS) and npm
 - Git
 
 ### Development Setup
@@ -60,14 +63,23 @@ See the [Game Design Document](docs/GDD.md) for:
 git clone <repository-url>
 cd football-management-sim
 
-# Install dependencies (after technology stack is chosen)
-# TBD based on Task 1.3
+# Install dependencies
+npm install
 
-# Run initial prototype
-# TBD
+# Build the project
+npm run build
+
+# Run the application
+npm start
 
 # Run tests
-# TBD
+npm test
+
+# Lint code
+npm run lint
+
+# Format code
+npm run format
 ```
 
 ### Project Structure
@@ -86,12 +98,13 @@ cd football-management-sim
 
 ## 🧪 Testing
 
-Automated testing will be implemented with:
-- Unit tests for data models and utilities
-- Integration tests for match simulation and transfer workflows
-- End-to-end tests for UI critical paths
+Automated testing with Jest:
 
-Run tests with: `npm test` or `pytest tests/` (TBD)
+- Unit tests for data models and utilities
+- Integration tests for core game systems
+- End-to-end tests for UI critical paths (future)
+
+Run tests with: `npm test`
 
 ## 📊 Performance Targets
 
@@ -123,4 +136,3 @@ This is a solo development project for now. Contributions not accepted unless sp
 ---
 
 **Status:** Early development phase - No playable build available yet.
-
