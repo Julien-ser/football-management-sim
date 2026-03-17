@@ -1,11 +1,13 @@
 # football-management-sim
+
 **Mission:** Create a game where the player is a football manager and has to take their team to domestic and European success !!!
 
 ## Phase 1: Planning & Setup
+
 - [x] Task 1.1: Define Detailed Game Design Document (GDD)
   - **Deliverable:** Comprehensive GDD covering core gameplay loops (match simulation, transfers, tactics), feature list (domestic leagues, European competitions, youth academy), UI wireframes, and technical architecture. Must be reviewed and approved.
   - **Status:** Completed on 2026-03-16. GDD created at `docs/GDD.md` with full specifications including: core gameplay loops, extensive feature list, UI wireframes, technical architecture, ER diagrams, development phases, risk assessment, and success metrics.
-- [ ] Task 1.2: Set Up Development Environment & Project Boilerplate
+- [x] Task 1.2: Set Up Development Environment & Project Boilerplate
   - **Deliverable:** Git repository with proper branching strategy, CI/CD pipeline (GitHub Actions for builds/tests), linting/styling configuration (ESLint/Prettier or equivalent), and basic project structure compilable with "Hello World" output.
 - [ ] Task 1.3: Choose Technology Stack & Libraries
   - **Deliverable:** Architecture Decision Record (ADR) documenting chosen libraries (e.g., game engine: Unity/Godot/Pygame; database: SQLite; UI framework: React/Flutter; build system); research on football data APIs (e.g., football-data.org) included.
@@ -13,6 +15,7 @@
   - **Deliverable:** ER diagram and initial implementation of core data models (Player, Team, Competition, Match) with basic properties and JSON/YAML serialization; at least 10 sample teams and 100 sample players for prototyping.
 
 ## Phase 2: Core Game Systems
+
 - [ ] Task 2.1: Build Match Simulation Engine
   - **Deliverable:** Functional match engine with event-driven simulation (goals, cards, substitutions, injuries), configurable match duration, real-time stats tracking (possession, shots, passes), and ability to simulate full 90+ minutes in <5 seconds. Include basic AI team behavior (formation adherence, player roles).
 - [ ] Task 2.2: Implement Tactics & Formation System
@@ -23,6 +26,7 @@
   - **Deliverable:** Multi-competition support (domestic league, domestic cup(s), European competitions: Champions League, Europa League, Conference League) with correct scheduling, fixture generation, qualification rules, and progression logic. Calendar view showing upcoming matches and availability.
 
 ## Phase 3: UI/UX & Polish
+
 - [ ] Task 3.1: Design Main Game HUD Interface
   - **Deliverable:** Fully styled main game screen with live league table panel, squad overview with player stats, finances dashboard (budget,收入支出), club status indicators (morale, board confidence), and navigable calendar. Must be responsive and visually consistent with a football manager aesthetic.
 - [ ] Task 3.2: Implement Match Day UI & Live Commentary
@@ -33,6 +37,7 @@
   - **Deliverable:** Audio system with crowd sounds, referee whistles, goal horns, UI click sounds, and background music tracks (menu, match, highlights). Basic visual animations for match events (player movement, celebration) and UI transitions. All assets properly licensed or original.
 
 ## Phase 4: Testing & Deployment
+
 - [ ] Task 4.1: Write Automated Test Suite
   - **Deliverable:** Comprehensive automated tests: unit tests for data models and utility functions (coverage ≥80%), integration tests for match simulation and transfer workflows, and end-to-end UI tests using appropriate framework (e.g., Selenium, Cypress). All tests integrated into CI pipeline.
 - [ ] Task 4.2: Conduct Beta Testing & Bug Fixes
@@ -41,4 +46,7 @@
   - **Deliverable:** Tuned match engine probabilities (shot conversion, tackle success), AI difficulty curves, transfer market pricing algorithms, and youth academy development rates to ensure challenging but fair gameplay. Optimized simulation to run ≤100ms per match minute in worst-case scenario. Memory leak fixes.
 - [ ] Task 4.4: Prepare Release Builds & Documentation
   - **Deliverable:** Platform-specific release builds (Windows .exe, macOS .dmg, Linux AppImage, or web deployment), user manual (PDF/online) covering all features, in-game tutorials/help system, release notes, promotional assets (screenshots, icon, store page graphics), and installer scripts ready for Steam/itch.io distribution.
+
+```
+
 ```
