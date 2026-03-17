@@ -1,5 +1,5 @@
-import { SaveGameStorage } from './SaveGameStorage';
-import { Team, Player, Competition, Match } from '../models';
+import { SaveGameStorage, SavedGame } from './SaveGameStorage';
+import { Team, Player, Competition, Match, Position } from '../models';
 import { Calendar } from '../competition/Calendar';
 import { Tactics } from '../models/Team';
 import { GameSettings } from '../contexts/GameContext';
@@ -31,24 +31,36 @@ describe('SaveGameStorage', () => {
   const mockTeam: Team = {
     id: 1,
     name: 'Test Team',
+    shortName: 'TST',
+    stadium: 'Test Stadium',
+    capacity: 50000,
+    leagueId: 1,
+    manager: 'Test Manager',
+    budget: 1000000,
     players: [],
     tactics: { formation: '4-4-2', mentality: 'balanced' } as Tactics,
-    budget: 1000000,
-    competitions: [],
+    morale: 50,
+    boardConfidence: 50,
   };
 
   const mockPlayer: Player = {
     id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    position: 'ST',
+    name: 'John Doe',
+    nationality: 'England',
+    dateOfBirth: '1998-01-01',
+    position: 'striker' as Position,
     currentRating: 75,
     potential: 80,
-    age: 25,
     contract: {
+      teamId: 1,
       salary: 50000,
       expiryDate: '2025-12-31',
-      bonuses: [],
+    },
+    stats: {
+      goals: 10,
+      assists: 5,
+      appearances: 30,
+      minutesPlayed: 2700,
     },
   };
 
@@ -56,8 +68,28 @@ describe('SaveGameStorage', () => {
     id: 1,
     name: 'Premier League',
     type: 'league',
+    country: 'England',
     teams: [],
-    fixtures: [],
+    season: '2025-26',
+    currentMatchday: 1,
+    format: 'round_robin',
+    stages: [],
+    matches: [],
+    rules: {
+      pointsPerWin: 3,
+      pointsPerDraw: 1,
+      pointsPerLoss: 0,
+      qualificationSpots: [],
+      relegationSpots: 3,
+      tiebreakers: [],
+      aggregateLegs: 2,
+      awayGoalsRule: true,
+      extraTime: true,
+      penalties: true,
+    },
+    seasonStartDate: '2025-08-01',
+    seasonEndDate: '2026-05-31',
+    currentStage: 'regular',
   };
 
   const mockMatch: Match = {
@@ -66,27 +98,33 @@ describe('SaveGameStorage', () => {
     awayTeamId: 2,
     competitionId: 1,
     date: '2025-01-01',
-    homeScore: 0,
-    awayScore: 0,
+    venue: 'Test Stadium',
     status: 'scheduled',
+    score: { home: 0, away: 0 },
     events: [],
-    stats: {
+    statistics: {
       possession: { home: 50, away: 50 },
       shots: { home: 0, away: 0 },
+      shotsOnTarget: { home: 0, away: 0 },
       passes: { home: 0, away: 0 },
+      passAccuracy: { home: 0, away: 0 },
       fouls: { home: 0, away: 0 },
       corners: { home: 0, away: 0 },
       offsides: { home: 0, away: 0 },
-      cards: { home: 0, away: 0 },
+      yellowCards: { home: 0, away: 0 },
+      redCards: { home: 0, away: 0 },
     },
   };
 
   const mockGameSettings: GameSettings = {
     graphicsQuality: 'high',
     audioEnabled: true,
-    matchSpeed: 'normal',
-    autoSaveEnabled: true,
+    musicVolume: 50,
+    soundVolume: 50,
+    autoSave: true,
     autoSaveInterval: 5,
+    matchSpeed: 'normal',
+    showTooltips: true,
   };
 
   const mockCurrentTactics: Tactics = {
@@ -106,7 +144,7 @@ describe('SaveGameStorage', () => {
     players: [mockPlayer],
     competitions: [mockCompetition],
     matches: [mockMatch],
-    calendar: new Calendar([mockCompetition]),
+    calendar: new Calendar('2025-08-01', '2026-05-31'),
     currentTeamId: 1,
     settings: mockGameSettings,
     currentTactics: mockCurrentTactics,
@@ -139,7 +177,7 @@ describe('SaveGameStorage', () => {
       const stored = localStorage.getItem('football_manager_save_slot_1');
       const parsed = JSON.parse(stored!);
       expect(parsed.teams[0].name).toBe('Test Team');
-      expect(parsed.players[0].firstName).toBe('John');
+      expect(parsed.players[0].name).toBe('John Doe');
     });
   });
 
@@ -166,7 +204,10 @@ describe('SaveGameStorage', () => {
     it('should correctly parse Calendar object', () => {
       SaveGameStorage.saveGame(1, mockSavedGame(1));
       const loaded = SaveGameStorage.loadGame(1);
-      expect(loaded!.calendar).toBeInstanceOf(Calendar);
+      expect(loaded!.calendar).toBeDefined();
+      // Calendar is serialized as dates, check the data is preserved
+      expect(loaded!.calendar?.getSeasonStart().getFullYear()).toBe(2025);
+      expect(loaded!.calendar?.getSeasonEnd().getFullYear()).toBe(2026);
     });
   });
 
