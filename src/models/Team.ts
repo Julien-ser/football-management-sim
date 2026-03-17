@@ -9,6 +9,8 @@ export interface Team {
   budget: number; // transfer budget in €
   players: number[]; // Player IDs
   tactics?: Tactics;
+  morale?: number; // 0-100
+  boardConfidence?: number; // 0-100
 }
 
 export interface Tactics {
