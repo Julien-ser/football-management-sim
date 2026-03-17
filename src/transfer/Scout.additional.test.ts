@@ -56,7 +56,7 @@ describe('Scout - Additional Coverage', () => {
       expect(ratingMismatch).toBeLessThan(80); // because variance and -5
 
       // Equal case: player nationality == regionExpertise => no penalty
-      const playerMatch = createTestPlayer(2, 'striker', 80, '1995-01-01', 'Europe'); // but 'Europe' is not a typical nationality; but we can test with regionExpertise = 'England' and nationality 'England'.
+      const playerMatch = createTestPlayer(2, 'striker', 80, '1995-01-01', 'England'); // match scout region
       const scoutMatch = new Scout('s2', 'Match Scout', 'England', 1.0); // perfect knowledge
       const ratingMatch = scoutMatch['evaluatePlayer'](playerMatch);
       expect(ratingMatch).toBe(80); // because no variance when knowledge=1, no penalty
@@ -113,17 +113,18 @@ describe('Scout - Additional Coverage', () => {
 
     it('should decrease confidence for older players', () => {
       const oldPlayer = createTestPlayer(1, 'striker', 80, '1985-01-01');
+      oldPlayer.stats.appearances = 0; // remove other factors to isolate age effect
       const confidence = scout['calculateConfidence'](oldPlayer, team);
-      // base 0.8 - 0.05 for age >30 = 0.75 (plus other)
+      // base 0.8 - 0.05 for age >30 = 0.75 (no other factors)
       expect(confidence).toBeLessThan(0.8);
     });
 
     it('should increase confidence with more appearances', () => {
-      const player = createTestPlayer(1, 'striker', 80, '1995-01-01');
+      const player = createTestPlayer(1, 'striker', 80, '2000-01-01'); // younger age to avoid age penalty
       player.stats.appearances = 200; // high appearances
       const confidence = scout['calculateConfidence'](player, team);
       // appearancesFactor = min(0.2, 200*0.002)=0.2 (capped)
-      // base 0.8 + 0.2 = 1.0 (capped)
+      // base 0.8 + 0.2 = 1.0 (capped), no region bonus (mismatch), no age penalty
       expect(confidence).toBeCloseTo(1.0, 1);
     });
   });
