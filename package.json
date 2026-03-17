@@ -17,7 +17,10 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "cypress run",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "benchmark": "npm run benchmark:match && npm run benchmark:memory",
+    "benchmark:match": "bash scripts/benchmark/match-simulation.sh",
+    "benchmark:memory": "bash scripts/benchmark/memory-usage.sh"
   },
   "keywords": [
     "football",
