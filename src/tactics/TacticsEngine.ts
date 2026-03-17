@@ -191,16 +191,17 @@ export class TacticsEngine {
 
   /**
    * Calculate tactical suitability for each player (0-100)
+   * @param startingXI Optional starting XI assignments. If not provided, uses empty array.
    */
-  calculateSuitability(): TacticalSuitability {
+  calculateSuitability(startingXI?: StartingXIAssignment[]): TacticalSuitability {
     const modifiers = this.calculateModifiers();
     const playerScores: { [playerId: number]: number } = {};
     let totalScore = 0;
     let formationFitTotal = 0;
     let roleFitTotal = 0;
 
-    // Get starting XI - will be implemented via TeamAI integration later
-    const startingXI: StartingXIAssignment[] = [];
+    // Use provided starting XI or empty array
+    const selectedXI = startingXI || [];
 
     for (const player of this.players) {
       let score = 50; // baseline
@@ -208,7 +209,7 @@ export class TacticsEngine {
       let roleFit = 50;
 
       // Check if player is in starting XI and fits formation
-      const assignment = startingXI.find((a) => a.playerId === player.id);
+      const assignment = selectedXI.find((a) => a.playerId === player.id);
       if (assignment) {
         formationFit = 80; // Selected for formation, good fit
       } else {
