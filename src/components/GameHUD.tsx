@@ -5,7 +5,7 @@ import SquadOverviewPanel from './SquadOverviewPanel';
 import FinancesPanel from './FinancesPanel';
 import ClubStatusPanel from './ClubStatusPanel';
 import CalendarPanel from './CalendarPanel';
-import './App.css';
+import '../styles/App.css';
 
 const GameHUD: React.FC = () => {
   const { currentTeam, setCurrentScreen } = useGame();
