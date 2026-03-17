@@ -2,6 +2,18 @@ import { Calendar, CalendarDay } from './Calendar';
 import { Match } from '../models/Match';
 import { Competition } from '../models/Competition';
 
+// Set up date mocking for tests that rely on "now"
+beforeEach(() => {
+  // Mock current time to 2025-08-05T12:00:00Z
+  const mockedDate = new Date('2025-08-05T12:00:00.000Z');
+  jest.useFakeTimers();
+  jest.setSystemTime(mockedDate);
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 function createTestMatch(
   id: number,
   homeTeamId: number,
@@ -116,6 +128,8 @@ describe('Calendar', () => {
   describe('Team Matches', () => {
     beforeEach(() => {
       calendar.scheduleCompetition(competition, matches);
+      // Default mock time: 2025-08-05 (before first matches)
+      jest.setSystemTime(new Date('2025-08-05T12:00:00.000Z'));
     });
 
     it('should get all matches for a team', () => {
@@ -136,27 +150,29 @@ describe('Calendar', () => {
     });
 
     it('should get upcoming matches for a team', () => {
-      const now = new Date('2025-08-05');
+      // Using default time from beforeEach: 2025-08-05
       const upcomingMatches = calendar.getUpcomingMatches(1, 30);
 
       expect(upcomingMatches.length).toBe(3);
-      // Verify all are in the future relative to now
+      // Verify all are in the future relative to now (2025-08-05)
       upcomingMatches.forEach((match) => {
-        expect(new Date(match.date) >= now).toBe(true);
+        expect(new Date(match.date) >= new Date('2025-08-05')).toBe(true);
       });
     });
 
     it('should get past matches for a team', () => {
-      const referenceDate = new Date('2025-08-20');
+      // Override system time to 2025-08-20 (after matches 1 and 3, before match 5)
+      jest.setSystemTime(new Date('2025-08-20T12:00:00.000Z'));
       const pastMatches = calendar.getPastMatches(1, new Date('2025-08-01'));
 
       expect(pastMatches.length).toBe(2); // matches 1 and 3 (before Aug 20)
       pastMatches.forEach((match) => {
-        expect(new Date(match.date) <= referenceDate).toBe(true);
+        expect(new Date(match.date) <= new Date('2025-08-20')).toBe(true);
       });
     });
 
     it('should get next match day for a team', () => {
+      // Using default time 2025-08-05, next match is match 1 on 2025-08-10
       const nextMatch = calendar.getNextMatchDay(1);
       expect(nextMatch).not.toBeNull();
       expect(nextMatch!.id).toBe(1); // First match on 2025-08-10
