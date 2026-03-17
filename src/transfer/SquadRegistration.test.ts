@@ -45,6 +45,25 @@ function createTestCompetition(
     teams: [],
     season: '2025-26',
     currentMatchday: 1,
+    format: type === 'league' ? 'round_robin' : 'single_elimination',
+    stages: [],
+    matches: [],
+    rules: {
+      pointsPerWin: 3,
+      pointsPerDraw: 1,
+      pointsPerLoss: 0,
+      qualificationSpots: [],
+      relegationSpots: 0,
+      promotionSpots: undefined,
+      tiebreakers: [],
+      aggregateLegs: 2,
+      awayGoalsRule: false,
+      extraTime: true,
+      penalties: true,
+    },
+    seasonStartDate: '2025-08-01',
+    seasonEndDate: '2026-05-31',
+    currentStage: 'group_stage',
   };
 }
 

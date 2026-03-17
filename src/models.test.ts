@@ -31,8 +31,8 @@ describe('Data Models', () => {
     expect(teams.length).toBe(10);
   });
 
-  test('should have 5 competitions', () => {
-    expect(competitions.length).toBe(5);
+  test('should have 10 competitions', () => {
+    expect(competitions.length).toBe(10);
   });
 
   test('each player should have required fields', () => {
