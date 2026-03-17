@@ -11,8 +11,8 @@ Build, manage, and guide your football club through multiple seasons, balancing 
 **Phase 1: Planning & Setup** (In Progress)
 
 - ✅ Task 1.1: Game Design Document (GDD) - [View docs/GDD.md](docs/GDD.md)
-- ⏳ Task 1.2: Development Environment Setup
-- ⏳ Task 1.3: Technology Stack Selection
+- ✅ Task 1.2: Development Environment Setup
+- ✅ Task 1.3: Technology Stack Selection - [View docs/ADR-001-technology-stack.md](docs/ADR-001-technology-stack.md)
 - ⏳ Task 1.4: Data Schema & Prototype Models
 
 See [TASKS.md](TASKS.md) for complete task list and progress.
@@ -32,14 +32,43 @@ See [TASKS.md](TASKS.md) for complete task list and progress.
 The project follows a layered architecture:
 
 ```
-Presentation Layer (UI)
+Presentation Layer (Console UI → Future: React Web UI)
     ↓
 Application Logic (Match Engine, Tactics, Transfer Market, etc.)
     ↓
 Data Layer (SQLite database, models, serialization)
 ```
 
-**Technology Stack:** Node.js/TypeScript (see [Task 1.3](TASKS.md#task-13-choose-technology-stack--libraries) for formal ADR)
+### Technology Stack
+
+**Core:**
+
+- **Language:** TypeScript 5.x
+- **Runtime:** Node.js 18+ (LTS)
+- **Database:** SQLite with `better-sqlite3` driver
+- **State/Events:** RxJS for reactive event handling
+
+**Development Tools:**
+
+- **Build:** TypeScript Compiler (`tsc`)
+- **Testing:** Jest + ts-jest
+- **Linting:** ESLint + @typescript-eslint
+- **Formatting:** Prettier
+- **CI/CD:** GitHub Actions (multi-version Node.js testing)
+
+**Future (Phase 3):**
+
+- **UI Framework:** React 18+ (for graphical interface)
+- **Styling:** Tailwind CSS or CSS Modules
+- **Routing:** React Router
+- **State Management:** React Context + hooks (or Zustand)
+
+**External APIs (Optional):**
+
+- football-data.org for real-world data integration
+- OpenFootball datasets for initial data bootstrapping
+
+See the [Architecture Decision Record](docs/ADR-001-technology-stack.md) for detailed rationale.
 
 See the [Game Design Document](docs/GDD.md) for:
 

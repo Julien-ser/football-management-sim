@@ -9,8 +9,9 @@
   - **Status:** Completed on 2026-03-16. GDD created at `docs/GDD.md` with full specifications including: core gameplay loops, extensive feature list, UI wireframes, technical architecture, ER diagrams, development phases, risk assessment, and success metrics.
 - [x] Task 1.2: Set Up Development Environment & Project Boilerplate
   - **Deliverable:** Git repository with proper branching strategy, CI/CD pipeline (GitHub Actions for builds/tests), linting/styling configuration (ESLint/Prettier or equivalent), and basic project structure compilable with "Hello World" output.
-- [ ] Task 1.3: Choose Technology Stack & Libraries
+- [x] Task 1.3: Choose Technology Stack & Libraries
   - **Deliverable:** Architecture Decision Record (ADR) documenting chosen libraries (e.g., game engine: Unity/Godot/Pygame; database: SQLite; UI framework: React/Flutter; build system); research on football data APIs (e.g., football-data.org) included.
+  - **Status:** Completed on 2026-03-16. ADR created at `docs/ADR-001-technology-stack.md`. Decision: Node.js/TypeScript stack with SQLite database, RxJS for events, console UI initially (migrating to React in Phase 3). Self-hosted football data with optional API integration.
 - [ ] Task 1.4: Create Initial Data Schema & Prototype Models
   - **Deliverable:** ER diagram and initial implementation of core data models (Player, Team, Competition, Match) with basic properties and JSON/YAML serialization; at least 10 sample teams and 100 sample players for prototyping.
 
