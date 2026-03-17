@@ -539,12 +539,16 @@ export class MatchSimulator {
     // Adjust probabilities based on minute (higher intensity late in half)
     const intensityMultiplier = minute > this.config.highIntensityStart ? 1.3 : 1.0;
 
-    // Calculate weighted event probabilities with tactical influence
-    let goalWeight = this.config.weightGoal * intensityMultiplier * modifiers.shootingMultiplier;
-    let yellowCardWeight = this.config.weightYellowCard;
-    let redCardWeight = this.config.weightRedCard;
-    let ownGoalWeight = this.config.weightOwnGoal;
-    let injuryWeight = this.config.weightInjury;
+    // Calculate weighted event probabilities with tactical influence and base probabilities
+    let goalWeight =
+      this.config.baseGoalProbability *
+      this.config.weightGoal *
+      intensityMultiplier *
+      modifiers.shootingMultiplier;
+    let yellowCardWeight = this.config.baseCardProbability * this.config.weightYellowCard;
+    let redCardWeight = this.config.baseCardProbability * this.config.weightRedCard;
+    let ownGoalWeight = this.config.baseGoalProbability * this.config.weightOwnGoal;
+    let injuryWeight = this.config.baseInjuryProbability * this.config.weightInjury;
 
     // Fouls influenced by tactical foulPropensity
     const foulPropensityModifier = modifiers.foulPropensity;
@@ -552,10 +556,13 @@ export class MatchSimulator {
     yellowCardWeight *= foulPropensityModifier;
     redCardWeight *= foulPropensityModifier * 0.8; // red cards less directly tied
 
-    // Only add penalty if rare event triggers
+    // Penalty: occasionally add penalty weight to goal events
     if (Math.random() < 0.001) {
-      goalWeight += this.config.weightPenalty;
+      goalWeight += this.config.baseGoalProbability * this.config.weightPenalty;
     }
+
+    // Add 'none' weight for idle minutes
+    const noneWeight = this.config.weightNone;
 
     const weights = [
       { type: 'goal', weight: goalWeight },
@@ -563,6 +570,7 @@ export class MatchSimulator {
       { type: 'yellow-card', weight: yellowCardWeight },
       { type: 'red-card', weight: redCardWeight },
       { type: 'injury', weight: injuryWeight },
+      { type: 'none', weight: noneWeight },
     ];
 
     const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
@@ -571,11 +579,14 @@ export class MatchSimulator {
     for (const w of weights) {
       random -= w.weight;
       if (random <= 0) {
+        if (w.type === 'none') {
+          return null;
+        }
         return this.createEventForType(w.type, minute, attackingTeamId, attackingTeam);
       }
     }
 
-    return null; // No event this minute
+    return null; // Fallback
   }
 
   private createEventForType(

@@ -27,16 +27,17 @@ export const DEFAULT_SIMULATION_CONFIG: SimulationConfig = {
   matchDuration: 90,
   extraTimeMin: 0,
   extraTimeMax: 3,
-  baseGoalProbability: 0.018, // ~1.6 goals per match average
-  baseCardProbability: 0.025, // ~2.25 cards per match average
-  baseInjuryProbability: 0.003, // ~0.27 injuries per match
+  baseGoalProbability: 0.027,
+  baseCardProbability: 0.026,
+  baseInjuryProbability: 0.0035,
   weightGoal: 1.0,
-  weightYellowCard: 2.5,
-  weightRedCard: 0.3,
-  weightOwnGoal: 0.05, // rare
-  weightInjury: 0.5,
+  weightYellowCard: 1.5,
+  weightRedCard: 0.1,
+  weightOwnGoal: 0.05,
+  weightInjury: 1.0,
   weightSubstitution: 0.8,
   weightPenalty: 0.15,
+  weightNone: 0.9,
   highIntensityStart: 70,
   targetMsPerGameMinute: 100,
 };
