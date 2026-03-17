@@ -1,29 +1,126 @@
-# Project Template
+# Football Manager Simulator
 
-This is a template for new projects created via `wiggum_master.sh create`.
+A strategic football management simulation game where you take charge of a football club and lead it to domestic and European glory.
 
-Each project:
-- Lives in `projects/<project-name>/`
-- Has its own GitHub repository
-- Runs its own autonomous OpenCode agent loop
-- Tracks progress in TASKS.md
+## 🎯 Mission
+Build, manage, and guide your football club through multiple seasons, balancing squad development, financial management, tactical innovation, and competition success across domestic leagues, cups, and European tournaments.
 
-## Setup
+## 📋 Project Status
 
-1. Create: `bash wiggum_master.sh create "my-project" "Description"`
-2. View: `cat projects/my-project/README.md`
-3. Initialize: `cd projects/my-project && opencode /init --yes`
-4. Run: `cd projects/my-project && bash wiggum.sh`
+**Phase 1: Planning & Setup** (In Progress)
 
-## Files
+- ✅ Task 1.1: Game Design Document (GDD) - [View docs/GDD.md](docs/GDD.md)
+- ⏳ Task 1.2: Development Environment Setup
+- ⏳ Task 1.3: Technology Stack Selection
+- ⏳ Task 1.4: Data Schema & Prototype Models
 
-- **README.md** - Project documentation
-- **TASKS.md** - Development task list
-- **prompt.txt** - Agent instructions (project-specific)
-- **AGENTS.md** - Project context (auto-generated)
-- **src/** - Source code directory
-- **tests/** - Test files
+See [TASKS.md](TASKS.md) for complete task list and progress.
 
-## Customization
+## 🎮 Core Features
 
-Update TASKS.md with your project goals, then let the agent handle it!
+- **Match Simulation:** Event-driven engine with real-time tactics and statistics
+- **Tactics System:** Formation editor (4-4-2, 4-3-3, etc.), team/player instructions
+- **Transfer Market:** Player search, scouting, bidding, contract negotiation
+- **Competitions:** Domestic leagues, cups, and UEFA Champions League/Europa League/Conference League
+- **Squad Management:** Rosters, contracts, player development, injuries
+- **Club Finances:** Budgeting, revenue streams (matchday, TV, commercial), wage management
+- **Youth Academy:** Recruitment, development, promotion pathway
+
+## 🏗️ Architecture
+
+The project follows a layered architecture:
+
+```
+Presentation Layer (UI)
+    ↓
+Application Logic (Match Engine, Tactics, Transfer Market, etc.)
+    ↓
+Data Layer (SQLite database, models, serialization)
+```
+
+**Technology Stack:** *To be determined in Task 1.3*
+
+See the [Game Design Document](docs/GDD.md) for:
+- Complete feature specification
+- Data models and ER diagrams
+- UI wireframes and layout designs
+- Performance requirements
+- Development phases and milestones
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.11+ or Node.js 18+ (depending on technology choice)
+- Git
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd football-management-sim
+
+# Install dependencies (after technology stack is chosen)
+# TBD based on Task 1.3
+
+# Run initial prototype
+# TBD
+
+# Run tests
+# TBD
+```
+
+### Project Structure
+
+```
+.
+├── docs/
+│   └── GDD.md           # Complete Game Design Document
+├── src/                 # Source code (to be created)
+├── tests/               # Test suite (to be created)
+├── data/                # Sample data, JSON fixtures
+├── TASKS.md             # Development task tracking
+├── README.md            # This file
+└── .github/workflows/   # CI/CD pipelines
+```
+
+## 🧪 Testing
+
+Automated testing will be implemented with:
+- Unit tests for data models and utilities
+- Integration tests for match simulation and transfer workflows
+- End-to-end tests for UI critical paths
+
+Run tests with: `npm test` or `pytest tests/` (TBD)
+
+## 📊 Performance Targets
+
+- Match simulation: ≤15 seconds for full 90+ minutes
+- Memory usage: <500MB steady state
+- Test coverage: ≥80%
+
+## 🤝 Contributing
+
+This is a solo development project for now. Contributions not accepted unless specified.
+
+## 📄 License
+
+[To be determined]
+
+## 📚 Documentation
+
+- [Game Design Document](docs/GDD.md) - Comprehensive design specification
+- [TASKS.md](TASKS.md) - Development roadmap
+- Inline code documentation (docstrings)
+
+## 🔮 Roadmap
+
+1. **Planning & Setup** (Tasks 1.1-1.4) → Complete GDD, choose tech stack, create data models
+2. **Core Game Systems** (Tasks 2.1-2.4) → Match engine, tactics, transfers, competitions
+3. **UI/UX & Polish** (Tasks 3.1-3.4) → Complete interface, match day UI, menus, assets
+4. **Testing & Deployment** (Tasks 4.1-4.4) → Automated tests, beta testing, performance tuning, release builds
+
+---
+
+**Status:** Early development phase - No playable build available yet.
+

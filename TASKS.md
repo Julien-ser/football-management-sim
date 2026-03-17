@@ -2,8 +2,9 @@
 **Mission:** Create a game where the player is a football manager and has to take their team to domestic and European success !!!
 
 ## Phase 1: Planning & Setup
-- [ ] Task 1.1: Define Detailed Game Design Document (GDD)
+- [x] Task 1.1: Define Detailed Game Design Document (GDD)
   - **Deliverable:** Comprehensive GDD covering core gameplay loops (match simulation, transfers, tactics), feature list (domestic leagues, European competitions, youth academy), UI wireframes, and technical architecture. Must be reviewed and approved.
+  - **Status:** Completed on 2026-03-16. GDD created at `docs/GDD.md` with full specifications including: core gameplay loops, extensive feature list, UI wireframes, technical architecture, ER diagrams, development phases, risk assessment, and success metrics.
 - [ ] Task 1.2: Set Up Development Environment & Project Boilerplate
   - **Deliverable:** Git repository with proper branching strategy, CI/CD pipeline (GitHub Actions for builds/tests), linting/styling configuration (ESLint/Prettier or equivalent), and basic project structure compilable with "Hello World" output.
 - [ ] Task 1.3: Choose Technology Stack & Libraries
