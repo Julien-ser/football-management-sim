@@ -7,6 +7,17 @@ import { MatchSimulator } from '../match/MatchSimulator';
 import { Tactics, PlayerInstruction } from '../models/Team';
 import { MatchEvent as SimulationMatchEvent } from '../match/events';
 
+interface GameSettings {
+  graphicsQuality: 'low' | 'medium' | 'high';
+  audioEnabled: boolean;
+  musicVolume: number; // 0-100
+  soundVolume: number; // 0-100
+  autoSave: boolean;
+  autoSaveInterval: number; // minutes
+  matchSpeed: 'slow' | 'normal' | 'fast';
+  showTooltips: boolean;
+}
+
 interface GameState {
   currentTeam: Team | null;
   setCurrentTeam: (team: Team | null) => void;
@@ -51,6 +62,12 @@ interface GameState {
     awayTactics?: Tactics
   ) => void;
   endMatch: () => void;
+  // Navigation state
+  currentScreen: 'mainMenu' | 'clubSelection' | 'game' | 'settings';
+  setCurrentScreen: (screen: 'mainMenu' | 'clubSelection' | 'game' | 'settings') => void;
+  // Settings
+  settings: GameSettings;
+  updateSettings: (settings: Partial<GameSettings>) => void;
 }
 
 const GameContext = createContext<GameState | undefined>(undefined);
@@ -87,6 +104,25 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     defensiveLine: 'medium',
     playerInstructions: [],
   });
+
+  // Navigation state
+  const [currentScreen, setCurrentScreen] = useState<
+    'mainMenu' | 'clubSelection' | 'game' | 'settings'
+  >('mainMenu');
+  const [settings, setSettings] = useState<GameSettings>({
+    graphicsQuality: 'medium',
+    audioEnabled: true,
+    musicVolume: 80,
+    soundVolume: 90,
+    autoSave: true,
+    autoSaveInterval: 5,
+    matchSpeed: 'normal',
+    showTooltips: true,
+  });
+
+  const updateSettings = (newSettings: Partial<GameSettings>) => {
+    setSettings((prev) => ({ ...prev, ...newSettings }));
+  };
 
   const updateLeagueTable = (competition: Competition, teamsList: Team[]) => {
     const table = new LeagueTable(competition, teamsList);
@@ -199,6 +235,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         updateMatchTactics,
         startMatch,
         endMatch,
+        // Navigation
+        currentScreen,
+        setCurrentScreen,
+        // Settings
+        settings,
+        updateSettings,
       }}
     >
       {children}
