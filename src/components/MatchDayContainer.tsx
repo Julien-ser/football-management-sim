@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useGame } from '../contexts/GameContext';
 import { MatchEvent as SimulationMatchEvent } from '../match/events';
 import CommentaryPanel from './CommentaryPanel';
@@ -8,6 +8,8 @@ import { Player } from '../models/Player';
 import { Tactics } from '../models/Team';
 import { Match } from '../models/Match';
 import './MatchDay.css';
+import { AudioManager } from '../audio/AudioManager';
+import { SoundType, AudioChannel } from '../audio/types';
 
 interface MatchDayContainerProps {
   onExitMatch: () => void;
@@ -118,6 +120,54 @@ const MatchDayContainer: React.FC<MatchDayContainerProps> = ({ onExitMatch }) =>
       setPlayerPerformances(performances);
     }
   }, [matchEvents, matchSimulator]);
+
+  // Audio integration: play sounds for new events
+  const prevEventsLengthRef = useRef(0);
+  useEffect(() => {
+    if (matchEvents.length > prevEventsLengthRef.current) {
+      const newEvents = matchEvents.slice(prevEventsLengthRef.current);
+      newEvents.forEach((event) => {
+        switch (event.type) {
+          case 'goal':
+            AudioManager.play(SoundType.GOAL_HORN, AudioChannel.SFX);
+            setTimeout(() => AudioManager.play(SoundType.GOAL, AudioChannel.SFX), 200);
+            break;
+          case 'yellow-card':
+            AudioManager.play(SoundType.CARD, AudioChannel.SFX);
+            break;
+          case 'red-card':
+            AudioManager.play(SoundType.CARD, AudioChannel.SFX);
+            break;
+          case 'match-start':
+            AudioManager.play(SoundType.KICK_OFF, AudioChannel.SFX);
+            break;
+          case 'half-time':
+            AudioManager.play(SoundType.HALF_TIME, AudioChannel.SFX);
+            break;
+          case 'full-time':
+            AudioManager.play(SoundType.FULL_TIME, AudioChannel.SFX);
+            break;
+          case 'substitution':
+            AudioManager.play(SoundType.UI_CLICK, AudioChannel.SFX);
+            break;
+          default:
+            if (event.type === 'foul' || event.type === 'corner') {
+              AudioManager.play(SoundType.WHISTLE, AudioChannel.SFX);
+            }
+        }
+      });
+    }
+    prevEventsLengthRef.current = matchEvents.length;
+  }, [matchEvents]);
+
+  // Background music during match
+  useEffect(() => {
+    if (isMatchInProgress) {
+      AudioManager.playBackgroundMusic();
+    } else {
+      AudioManager.stopBackgroundMusic();
+    }
+  }, [isMatchInProgress]);
 
   const handleTacticsChange = useCallback(
     (team: 'home' | 'away', tactics: Partial<Tactics>) => {

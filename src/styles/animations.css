@@ -1,0 +1,209 @@
+/* animations.css - CSS animations for the football management sim */
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes goal-flash {
+  0% {
+    background-color: rgba(76, 175, 80, 0.5);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes card-yellow-flash {
+  0% {
+    background-color: rgba(255, 235, 59, 0.7);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes card-red-flash {
+  0% {
+    background-color: rgba(244, 67, 54, 0.7);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes highlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+/* Utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 1s infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-goal-flash {
+  animation: goal-flash 1s ease-out;
+}
+
+.animate-card-yellow {
+  animation: card-yellow-flash 1s ease-out;
+}
+
+.animate-card-red {
+  animation: card-red-flash 1s ease-out;
+}
+
+.animate-highlight {
+  animation: highlight 1.5s ease-out;
+}
+
+/* Commentary panel specific - enhance existing .commentary-event if needed */
+.commentary-event {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: slideUp 0.3s ease-out;
+}
+
+.commentary-event.goal {
+  background: rgba(76, 175, 80, 0.2);
+  border-left: 4px solid #4caf50;
+}
+
+.commentary-event.yellow-card,
+.commentary-event.yellow {
+  background: rgba(255, 235, 59, 0.2);
+  border-left: 4px solid #ffeb3b;
+}
+
+.commentary-event.red-card,
+.commentary-event.red {
+  background: rgba(244, 67, 54, 0.2);
+  border-left: 4px solid #f44336;
+}
+
+.commentary-event.whistle {
+  opacity: 0.8;
+}
+
+.commentary-event.substitution {
+  border-left: 4px solid #2196f3;
+}
+
+/* Post-match analysis animations */
+.player-ratings-table {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* UI transitions */
+.modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Button hover effects */
+button {
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}

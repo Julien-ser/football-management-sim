@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGame } from '../contexts/GameContext';
 import './Menu.css';
+import { AudioManager } from '../audio/AudioManager';
 
 const SettingsPanel: React.FC = () => {
   const { settings, updateSettings, setCurrentScreen } = useGame();
@@ -41,6 +42,15 @@ const SettingsPanel: React.FC = () => {
   const handleTooltipsToggle = () => {
     updateSettings({ showTooltips: !settings.showTooltips });
   };
+
+  // Sync audio settings with AudioManager
+  useEffect(() => {
+    AudioManager.setSettings({
+      muted: !settings.audioEnabled,
+      musicVolume: settings.musicVolume / 100,
+      sfxVolume: settings.soundVolume / 100,
+    });
+  }, [settings.audioEnabled, settings.musicVolume, settings.soundVolume]);
 
   return (
     <div className="menu-container settings-panel">

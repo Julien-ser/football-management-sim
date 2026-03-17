@@ -7,6 +7,7 @@ import SaveGameScreen from './components/SaveGameScreen';
 import GameHUD from './components/GameHUD';
 import MatchDayContainer from './components/MatchDayContainer';
 import './styles/App.css';
+import './styles/animations.css';
 
 const App: React.FC = () => {
   const {

@@ -45,6 +45,8 @@ See [TASKS.md](TASKS.md) for complete task list and progress.
 - **Squad Management:** Rosters, contracts, player development, injuries
 - **Club Finances:** Budgeting, revenue streams (matchday, TV, commercial), wage management
 - **Youth Academy:** Recruitment, development, promotion pathway
+- **Audio System:** Complete audio integration including crowd ambience, match event sounds (goals, cards, whistles), and UI feedback. Audio settings (master volume, music, sound effects, mute) are configurable in the Settings panel.
+- **Animations:** The interface includes smooth CSS animations for match commentary events, UI transitions, and interactive elements to enhance the visual experience.
 
 ## 🏗️ Architecture
 

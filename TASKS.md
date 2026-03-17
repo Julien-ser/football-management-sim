@@ -39,7 +39,7 @@
 - [x] Task 3.3: Build Menu & Navigation Systems
   - **Deliverable:** Main menu (start new career, load game, settings, quit), club selection screen (choose from playable leagues), settings panel (graphics, audio, gameplay preferences), and robust save/load system with at least 10 save slots and autosave functionality.
   - **Status:** Completed on 2026-03-17. Implemented comprehensive menu system with MainMenu (new career, load game, settings, quit), ClubSelection (league filtering, team cards with detailed info), SettingsPanel (graphics quality, audio controls, match speed, auto-save toggle with interval selection, tooltips), and SaveGameScreen with 10 save slots, save/load/delete functionality, and autosave integration. All 162 tests passing. See `src/components/` and `src/utils/SaveGameStorage.ts` for implementation.
-- [ ] Task 3.4: Integrate Audio/Visual Assets & Animations
+- [x] Task 3.4: Integrate Audio/Visual Assets & Animations
   - **Deliverable:** Audio system with crowd sounds, referee whistles, goal horns, UI click sounds, and background music tracks (menu, match, highlights). Basic visual animations for match events (player movement, celebration) and UI transitions. All assets properly licensed or original.
 
 ## Phase 4: Testing & Deployment
