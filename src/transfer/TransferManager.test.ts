@@ -385,4 +385,74 @@ describe('TransferManager', () => {
       expect((manager as any).transferAIs.has(11)).toBe(true);
     });
   });
+
+  describe('Additional missing edge cases', () => {
+    it('should return false for listPlayer with non-existent player', () => {
+      const result = manager.listPlayer(999, 50000000);
+      expect(result).toBe(false);
+    });
+
+    it('should return false for listPlayer when player has invalid team', () => {
+      const badPlayer: Player = {
+        ...createTestPlayer(100, 1),
+        contract: { ...createTestPlayer(100, 1).contract, teamId: 999 },
+      };
+      const badList = [...players, badPlayer];
+      manager.updateData(badList, teams, competitions);
+      const result = manager.listPlayer(100, 50000000);
+      expect(result).toBe(false);
+    });
+
+    it('should return false for withdrawListing when listing exists but status is withdrawn', () => {
+      manager.listPlayer(1, 50000000);
+      manager.withdrawListing(1);
+      const result = manager.withdrawListing(1);
+      expect(result).toBe(false);
+    });
+
+    it('should return null for placeBid with insufficient buyer budget', () => {
+      manager.listPlayer(1, 50000000);
+      const result = manager.placeBid(1, 2, 200000000);
+      expect(result).toBeNull();
+    });
+
+    it('should return null for placeBid with non-existent listing', () => {
+      const result = manager.placeBid(999, 2, 50000000);
+      expect(result).toBeNull();
+    });
+
+    it('should return null for placeBid when buyer team does not exist', () => {
+      manager.listPlayer(1, 50000000);
+      const result = manager.placeBid(1, 999, 50000000);
+      expect(result).toBeNull();
+    });
+
+    it('should return null for placeBid when listing is not available', () => {
+      manager.listPlayer(1, 50000000);
+      manager.withdrawListing(1);
+      const result = manager.placeBid(1, 2, 50000000);
+      expect(result).toBeNull();
+    });
+
+    it('should filter team registrations by season', () => {
+      const team1Players = manager.getPlayers().filter((p) => p.contract.teamId === 1);
+      const playerIds = team1Players.map((p) => p.id);
+      const slots = team1Players.map((p, idx) => ({
+        playerId: p.id,
+        position: p.position,
+        jerseyNumber: idx + 1,
+        isCaptain: idx === 0,
+        isViceCaptain: false,
+      }));
+      manager.registerSquad(1, 2, '2025-2026', playerIds, slots);
+      manager.registerSquad(1, 2, '2024-2025', playerIds, slots);
+
+      const all = manager.getTeamRegistrations(1);
+      const filtered = manager.getTeamRegistrations(1, '2025-2026');
+
+      expect(all.length).toBe(2);
+      expect(filtered.length).toBe(1);
+      expect(filtered[0].season).toBe('2025-2026');
+    });
+  });
 });
