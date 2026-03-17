@@ -44,7 +44,7 @@ export interface Bid {
   paymentStructure?: PaymentStructure;
   includesPlayerExchange?: boolean;
   exchangePlayers?: number[]; // player IDs going the other way
-  status: 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn';
+  status: 'pending' | 'accepted' | 'rejected' | 'countered' | 'withdrawn' | 'completed';
   counterBidId?: string;
   createdAt: string;
   expiresAt?: string;

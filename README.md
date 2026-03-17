@@ -27,7 +27,13 @@ See [TASKS.md](TASKS.md) for complete task list and progress.
   - Tactical influence on match outcomes (formation, mentality, pressing, passing style)
   - Event streaming via RxJS for live commentary and UI updates
 - **Tactics System:** Formation editor (4-4-2, 4-3-3, etc.), team/player instructions
-- **Transfer Market:** Player search, scouting, bidding, contract negotiation
+- **Transfer Market System (Phase 2 Complete):** Comprehensive player transfer management including:
+  - **Player Search & Filtering:** Search by position, rating, age, nationality, salary, contract expiry
+  - **Scouting System:** Hire scouts with region expertise, generate detailed reports with ratings, potential, strengths/weaknesses, and recommendations
+  - **Bidding & Negotiation:** Place bids, accept/reject/counter offers, contract negotiation with salary, bonuses, and contract length
+  - **AI Club Behavior:** Computer-controlled clubs actively participate in the transfer market, identifying squad needs and pursuing targets
+  - **Squad Registration:** Register players for competitions with position minimums, jersey number uniqueness, and captain/vice-captain assignments
+  - **Budget Management:** Track transfers fees, wages, and ensure financial viability with buffer requirements
 - **Competitions:** Domestic leagues, cups, and UEFA Champions League/Europa League/Conference League
 - **Squad Management:** Rosters, contracts, player development, injuries
 - **Club Finances:** Budgeting, revenue streams (matchday, TV, commercial), wage management
