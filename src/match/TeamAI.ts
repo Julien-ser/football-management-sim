@@ -1,4 +1,4 @@
-import { Team, Tactics } from '../models/Team';
+import { Team, Tactics, PlayerInstruction } from '../models/Team';
 import { Player as PlayerModel } from '../models/Player';
 
 export interface PlayerRoleAssignment {
@@ -79,6 +79,14 @@ export class TeamAI {
     const selectedPlayers = new Set<number>();
     const assignments: PlayerRoleAssignment[] = [];
 
+    // Build a map of player instructions for quick lookup
+    const instructionMap = new Map<number, PlayerInstruction>();
+    if (this.tactics.playerInstructions) {
+      this.tactics.playerInstructions.forEach((inst) => {
+        instructionMap.set(inst.playerId, inst);
+      });
+    }
+
     // Simple selection: pick best available players for each position
     for (const pos of positions) {
       const suitablePlayers = this.players
@@ -90,15 +98,67 @@ export class TeamAI {
 
       if (suitablePlayers.length > 0) {
         selectedPlayers.add(suitablePlayers[0].id);
+
+        // Determine role: check for custom instruction first, then use default role from formation/mentality
+        const instruction = instructionMap.get(suitablePlayers[0].id);
+        let role = this.getRoleForPosition(pos, this.tactics.mentality);
+
+        if (instruction?.role) {
+          // Use custom role from instruction if provided
+          role = instruction.role;
+        } else if (instruction?.duty) {
+          // Adjust role based on duty (support/attack/defense)
+          role = this.adjustRoleByDuty(role, instruction.duty);
+        }
+
         assignments.push({
           playerId: suitablePlayers[0].id,
           position: pos,
-          role: this.getRoleForPosition(pos, this.tactics.mentality),
+          role,
         });
       }
     }
 
     return assignments;
+  }
+
+  /**
+   * Adjust a base role based on player duty
+   */
+  private adjustRoleByDuty(baseRole: string, duty: string): string {
+    // Map base roles to duty-specific variants
+    const dutyAdjustments: Record<string, Record<string, string>> = {
+      'Advanced Forward': {
+        support: 'Complete Forward',
+        attack: 'Advanced Forward',
+        defense: 'Target Man',
+      },
+      'Complete Forward': {
+        support: 'Complete Forward',
+        attack: 'Complete Forward',
+        defense: 'Target Man',
+      },
+      'Box-to-Box Midfielder': {
+        support: 'Deep Lying Midfielder',
+        attack: 'Advanced Playmaker',
+        defense: 'Defensive Midfielder',
+      },
+      'Advanced Playmaker': {
+        support: 'Deep Lying Midfielder',
+        attack: 'Advanced Playmaker',
+        defense: 'Defensive Midfielder',
+      },
+      Winger: { support: 'Inside Forward', attack: 'Inside Forward', defense: 'Winger' },
+      'Inside Forward': { support: 'Inside Forward', attack: 'Inside Forward', defense: 'Winger' },
+      'Wing Back': { support: 'Wing Back', attack: 'Wing Back', defense: 'Defensive Wing Back' },
+      'Full Back': { support: 'Full Back', attack: 'Full Back', defense: 'Defensive Full Back' },
+    };
+
+    const adjustments = dutyAdjustments[baseRole];
+    if (adjustments && adjustments[duty]) {
+      return adjustments[duty];
+    }
+    return baseRole; // Return original if no mapping exists
   }
 
   private matchesPosition(playerPos: string, formationPos: string): boolean {

@@ -5,6 +5,7 @@ import { Match } from '../models/Match';
 import { MatchStatus } from '../models/Match';
 import { Team, Tactics } from '../models/Team';
 import { Player } from '../models/Player';
+import { TacticsEngine, TacticalModifiers } from '../tactics/TacticsEngine';
 
 export interface SimulateMatchOptions {
   homeTeam: Team;
@@ -25,6 +26,8 @@ export class MatchSimulator {
   private awayPlayers: Player[];
   private homeTeam: Team;
   private awayTeam: Team;
+  private homeTacticsEngine: TacticsEngine;
+  private awayTacticsEngine: TacticsEngine;
 
   // Match state
   private currentMinute: number = 0;
@@ -77,10 +80,63 @@ export class MatchSimulator {
       options.awayPlayers,
       options.awayTactics || options.awayTeam.tactics
     );
+
+    // Initialize TacticsEngines with tactics from TeamAI
+    this.homeTacticsEngine = new TacticsEngine(
+      this.homeTeamAI.getTactics(),
+      this.homePlayers,
+      this.homeTeamAI.getTactics().playerInstructions
+    );
+    this.awayTacticsEngine = new TacticsEngine(
+      this.awayTeamAI.getTactics(),
+      this.awayPlayers,
+      this.awayTeamAI.getTactics().playerInstructions
+    );
   }
 
   getEventManager(): EventManager {
     return this.eventManager;
+  }
+
+  /**
+   * Update tactics during a match (in-match tactical changes)
+   * @param team - 'home' or 'away'
+   * @param newTactics - Partial tactics to update
+   */
+  updateTactics(team: 'home' | 'away', newTactics: Partial<Tactics>): void {
+    if (team === 'home') {
+      this.homeTeamAI.updateTactics(newTactics);
+      // Recreate TacticsEngine with updated tactics
+      this.homeTacticsEngine = new TacticsEngine(
+        this.homeTeamAI.getTactics(),
+        this.homePlayers,
+        this.homeTeamAI.getTactics().playerInstructions
+      );
+    } else {
+      this.awayTeamAI.updateTactics(newTactics);
+      // Recreate TacticsEngine with updated tactics
+      this.awayTacticsEngine = new TacticsEngine(
+        this.awayTeamAI.getTactics(),
+        this.awayPlayers,
+        this.awayTeamAI.getTactics().playerInstructions
+      );
+    }
+  }
+
+  /**
+   * Get current tactics for a team
+   */
+  getTactics(team: 'home' | 'away'): Tactics {
+    return team === 'home' ? this.homeTeamAI.getTactics() : this.awayTeamAI.getTactics();
+  }
+
+  /**
+   * Get current tactical modifiers for a team
+   */
+  getTacticalModifiers(team: 'home' | 'away'): TacticalModifiers {
+    return team === 'home'
+      ? this.homeTacticsEngine.getModifiers()
+      : this.awayTacticsEngine.getModifiers();
   }
 
   async simulate(): Promise<Match> {
@@ -298,37 +354,25 @@ export class MatchSimulator {
   }
 
   private determinePossession(minute: number): 'home' | 'away' {
-    // Base possession from tactics and team quality
-    const homeTactics = this.homeTeamAI.getTactics();
-    const awayTactics = this.awayTeamAI.getTactics();
+    // Get tactical modifiers from engines
+    const homeModifiers = this.homeTacticsEngine.getModifiers();
+    const awayModifiers = this.awayTacticsEngine.getModifiers();
 
-    // Home advantage
+    // Base possession
     let homeWeight = 50; // base 50%
 
-    // Attacking mentality increases possession
-    if (homeTactics.mentality === 'attacking') homeWeight += 10;
-    if (homeTactics.mentality === 'defensive') homeWeight -= 10;
+    // Apply tactical modifiers
+    homeWeight += (homeModifiers.possessionMultiplier - 1) * 20;
+    homeWeight -= (awayModifiers.possessionMultiplier - 1) * 15;
 
-    // Passing style affects possession
-    if (homeTactics.passingStyle === 'short') homeWeight += 5;
-    if (homeTactics.passingStyle === 'long') homeWeight -= 5;
-
-    // Width affects possession control
-    if (homeTactics.width === 'wide') homeWeight += 3;
-    if (homeTactics.width === 'narrow') homeWeight -= 3;
-
-    // Defensive line affects control
-    if (homeTactics.defensiveLine === 'high') homeWeight += 4;
-    if (homeTactics.defensiveLine === 'low') homeWeight -= 4;
-
-    // Team quality difference (simplified)
+    // Team quality difference
     const homeAvgRating = this.getAverageRating(this.homePlayers);
     const awayAvgRating = this.getAverageRating(this.awayPlayers);
     const ratingDiff = homeAvgRating - awayAvgRating;
-    homeWeight += ratingDiff * 0.2; // up to ±20%
+    homeWeight += ratingDiff * 0.2;
 
-    // Add randomness
-    homeWeight += (Math.random() - 0.5) * 20;
+    // Add randomness (±15%)
+    homeWeight += (Math.random() - 0.5) * 30;
 
     return homeWeight > 50 ? 'home' : 'away';
   }
@@ -336,23 +380,37 @@ export class MatchSimulator {
   private generateEvent(minute: number, isHomePossession: boolean): EventManagerMatchEvent | null {
     const attackingTeam = isHomePossession ? 'home' : 'away';
     const attackingTeamId = isHomePossession ? this.homeTeam.id : this.awayTeam.id;
+    const attackingTactics = isHomePossession ? this.homeTacticsEngine : this.awayTacticsEngine;
+    const modifiers = attackingTactics.getModifiers();
 
     // Adjust probabilities based on minute (higher intensity late in half)
     const intensityMultiplier = minute > this.config.highIntensityStart ? 1.3 : 1.0;
 
-    // Calculate weighted random event
-    const weights = [
-      { type: 'goal', weight: this.config.weightGoal * intensityMultiplier },
-      { type: 'own-goal', weight: this.config.weightOwnGoal * intensityMultiplier },
-      { type: 'yellow-card', weight: this.config.weightYellowCard },
-      { type: 'red-card', weight: this.config.weightRedCard },
-      { type: 'injury', weight: this.config.weightInjury },
-    ];
+    // Calculate weighted event probabilities with tactical influence
+    let goalWeight = this.config.weightGoal * intensityMultiplier * modifiers.shootingMultiplier;
+    let yellowCardWeight = this.config.weightYellowCard;
+    let redCardWeight = this.config.weightRedCard;
+    let ownGoalWeight = this.config.weightOwnGoal;
+    let injuryWeight = this.config.weightInjury;
+
+    // Fouls influenced by tactical foulPropensity
+    const foulPropensityModifier = modifiers.foulPropensity;
+    // Apply foul propensity to yellow/red cards (more fouling = more cards)
+    yellowCardWeight *= foulPropensityModifier;
+    redCardWeight *= foulPropensityModifier * 0.8; // red cards less directly tied
 
     // Only add penalty if rare event triggers
     if (Math.random() < 0.001) {
-      weights.push({ type: 'penalty', weight: this.config.weightPenalty });
+      goalWeight += this.config.weightPenalty;
     }
+
+    const weights = [
+      { type: 'goal', weight: goalWeight },
+      { type: 'own-goal', weight: ownGoalWeight },
+      { type: 'yellow-card', weight: yellowCardWeight },
+      { type: 'red-card', weight: redCardWeight },
+      { type: 'injury', weight: injuryWeight },
+    ];
 
     const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
     let random = Math.random() * totalWeight;
@@ -490,8 +548,15 @@ export class MatchSimulator {
   private generateSetPiece(minute: number, isHomePossession: boolean): void {
     const team = isHomePossession ? 'home' : 'away';
     const teamId = isHomePossession ? this.homeTeam.id : this.awayTeam.id;
+    const tacticsEngine = isHomePossession ? this.homeTacticsEngine : this.awayTacticsEngine;
+    const modifiers = tacticsEngine.getModifiers();
 
-    if (Math.random() < 0.7) {
+    // Base probability for set piece (corner or foul)
+    const baseSetPieceChance = 0.05; // 5% per minute baseline
+    // Adjust by crossingMultiplier (more crossing = more corners)
+    const adjustedChance = baseSetPieceChance * modifiers.crossingMultiplier;
+
+    if (Math.random() < adjustedChance) {
       this.stats.corners[team]++;
       this.emitEvent({
         minute,
@@ -500,13 +565,17 @@ export class MatchSimulator {
         details: 'Corner kick',
       });
     } else {
-      this.stats.fouls[team]++;
-      this.emitEvent({
-        minute,
-        type: 'foul',
-        teamId,
-        details: 'Foul committed',
-      });
+      // Fouls influenced by pressing intensity (higher pressing = more fouls)
+      const foulChance = 0.03 * modifiers.pressingMultiplier * modifiers.foulPropensity;
+      if (Math.random() < foulChance) {
+        this.stats.fouls[team]++;
+        this.emitEvent({
+          minute,
+          type: 'foul',
+          teamId,
+          details: 'Foul committed',
+        });
+      }
     }
   }
 
