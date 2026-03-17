@@ -162,13 +162,39 @@ npm run format
 
 ## 🧪 Testing
 
-Automated testing with Jest:
+**Current Coverage: >89%** (Statements, Lines, Functions)
 
-- Unit tests for data models and utilities
-- Integration tests for core game systems
-- End-to-end tests for UI critical paths (future)
+The project includes a comprehensive automated test suite:
 
-Run tests with: `npm test`
+- **Unit Tests:** Jest tests covering data models, utilities, match engine, tactics, transfer system, competitions, and UI components
+- **Integration Tests:** End-to-end workflows for match simulation, transfer market, squad registration, and calendar
+- **E2E Tests:** Cypress tests verifying complete user journeys through the React UI
+
+### Running Tests
+
+```bash
+# Run all tests (unit + integration)
+npm test
+
+# Run with coverage report
+npm run test:coverage
+
+# Run E2E tests (Cypress)
+npm run test:e2e
+
+# Run all test suites
+npm run test:all
+```
+
+### Continuous Integration
+
+Tests run automatically on every push and pull request via GitHub Actions:
+
+- Node.js 18.x and 20.x matrix
+- Linting, build, and test steps
+- Coverage thresholds enforced
+
+See `.github/workflows/test.yml` for CI configuration.
 
 ## 📊 Performance Targets
 
