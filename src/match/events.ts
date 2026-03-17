@@ -23,7 +23,9 @@ export type EventType =
   | 'own-goal'
   | 'half-time'
   | 'full-time'
-  | 'match-end';
+  | 'match-end'
+  | 'corner'
+  | 'foul';
 
 export class EventManager {
   private eventSubject: Subject<MatchEvent> = new Subject();

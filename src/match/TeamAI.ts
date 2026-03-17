@@ -1,6 +1,5 @@
 import { Team, Tactics } from '../models/Team';
 import { Player as PlayerModel } from '../models/Player';
-import { Player as PlayerModel } from '../models/Player';
 
 export interface PlayerRoleAssignment {
   playerId: number;
