@@ -239,6 +239,10 @@ class AudioManagerClass {
 
   async loadSoundAsset(type: SoundType, url: string): Promise<void> {
     if (!this.audioContext) await this.initialize();
+    if (!this.audioContext) {
+      console.error(`Cannot load sound asset ${type}: AudioContext not available`);
+      return;
+    }
 
     try {
       const response = await fetch(url);
