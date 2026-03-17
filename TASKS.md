@@ -20,8 +20,9 @@
 - [x] Task 2.1: Build Match Simulation Engine
   - **Deliverable:** Functional match engine with event-driven simulation (goals, cards, substitutions, injuries), configurable match duration, real-time stats tracking (possession, shots, passes), and ability to simulate full 90+ minutes in <5 seconds. Include basic AI team behavior (formation adherence, player roles).
   - **Status:** Completed on 2026-03-16. Match engine implemented with comprehensive event system (goals, own goals, yellow/red cards including second yellow→red, injuries, penalties, corner kicks, fouls), statistics tracking (possession, shots, passes, fouls, corners, offsides, cards), AI-driven team decisions (formations, player roles, substitutions based on fatigue and game context), and full match simulation averaging <5 seconds. All tests passing (7/7 match simulator tests). See `src/match/` for implementation.
-- [ ] Task 2.2: Implement Tactics & Formation System
+- [x] Task 2.2: Implement Tactics & Formation System
   - **Deliverable:** Tactics editor with preset formations (4-4-2, 4-3-3, 3-5-2, etc.), customizable player instructions (defensive/attacking mentality, pressing intensity, passing style), and in-match tactical changes that affect simulation parameters. Must support saving/loading tactical presets.
+  - **Status:** Completed on 2026-03-16. Implemented comprehensive tactics system with TacticsEditor, TacticsEngine, TacticsPresets, TeamAI integration, and file persistence for custom presets. All 43 tests passing.
 - [ ] Task 2.3: Develop Transfer & Squad Management
   - **Deliverable:** Transfer market system with player search/filtering, scouting reports, bid placement, contract negotiation (wages, bonuses, length), squad registration for competitions, and AI-driven behavior for other clubs. Include budget management with income/expense tracking.
 - [ ] Task 2.4: Create Competition & Calendar System

@@ -193,7 +193,8 @@ export class TacticsEditor {
    * Note: player instructions are NOT saved as they are specific to current squad
    */
   saveAsPreset(name: string, description?: string): TacticsPreset {
-    const { playerInstructions, ...tacticsWithoutInstructions } = this.state.tactics;
+    const { playerInstructions: _playerInstructions, ...tacticsWithoutInstructions } =
+      this.state.tactics;
     const preset = this.presetManager.createCustomPreset(
       name,
       tacticsWithoutInstructions,

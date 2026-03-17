@@ -1,4 +1,6 @@
 import { Tactics } from '../models/Team';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export interface FormationPreset {
   name: string;
@@ -221,12 +223,53 @@ export const DEFAULT_TACTICS_PRESETS: TacticsPreset[] = [
 
 export class TacticsPresetManager {
   private presets: Map<string, TacticsPreset> = new Map();
+  private storagePath?: string;
 
-  constructor() {
-    // Load default presets
+  constructor(storagePath?: string) {
+    this.storagePath = storagePath;
+
+    // Always load default presets first
     DEFAULT_TACTICS_PRESETS.forEach((preset) => {
       this.presets.set(preset.id, preset);
     });
+
+    // Then load from file if path provided (custom presets will be added)
+    if (storagePath) {
+      this.loadFromFile();
+    }
+  }
+
+  private saveToFile(): void {
+    if (!this.storagePath) return;
+
+    try {
+      // Only save custom (non-default) presets to file
+      const customPresets = Array.from(this.presets.values()).filter((p) => !p.isDefault);
+      const dir = path.dirname(this.storagePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(this.storagePath, JSON.stringify(customPresets, null, 2));
+    } catch (error) {
+      console.warn(`Failed to save presets to ${this.storagePath}:`, error);
+    }
+  }
+
+  private loadFromFile(): void {
+    if (!this.storagePath) return;
+
+    try {
+      if (fs.existsSync(this.storagePath)) {
+        const fileContent = fs.readFileSync(this.storagePath, 'utf-8');
+        const savedPresets: TacticsPreset[] = JSON.parse(fileContent);
+        savedPresets.forEach((preset) => {
+          this.presets.set(preset.id, preset);
+        });
+      }
+    } catch (error) {
+      // Silently fail on load error, will use defaults
+      console.warn(`Failed to load presets from ${this.storagePath}:`, error);
+    }
   }
 
   getAllPresets(): TacticsPreset[] {
@@ -239,12 +282,14 @@ export class TacticsPresetManager {
 
   savePreset(preset: TacticsPreset): void {
     this.presets.set(preset.id, preset);
+    this.saveToFile();
   }
 
   deletePreset(id: string): boolean {
     const preset = this.presets.get(id);
     if (preset && !preset.isDefault) {
       this.presets.delete(id);
+      this.saveToFile();
       return true;
     }
     return false;
