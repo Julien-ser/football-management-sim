@@ -281,4 +281,108 @@ describe('TransferManager', () => {
       expect(assessment).toHaveProperty('projectedCost');
     });
   });
+
+  describe('Edge cases and error handling', () => {
+    it('should handle performAIActivity when no AI initialized', async () => {
+      const reports = await manager.performAIActivity();
+      expect(reports.size).toBe(0);
+    });
+
+    it('should handle performAIActivity for teams without AI', async () => {
+      // Initialize AI only for team 1
+      manager.initializeAI([1]);
+      // Request activity for team 2 (no AI)
+      const reports = await manager.performAIActivity([2]);
+      expect(reports.size).toBe(0);
+    });
+
+    it('should return false for withdrawListing non-existent player', () => {
+      expect(manager.withdrawListing(999)).toBe(false);
+    });
+
+    it('should return false for completeTransfer with non-existent bid', () => {
+      expect(manager.completeTransfer('nonexistent')).toBe(false);
+    });
+
+    it('should return false for completeTransfer when contract negotiation fails', () => {
+      manager.listPlayer(1, 50000000);
+      const bid = manager.placeBid(1, 2, 48000000);
+      manager.acceptBid(bid!.id);
+
+      const negotiator = (manager as any).negotiator;
+      const spy = jest.spyOn(negotiator, 'negotiateContract').mockReturnValue({ accepted: false });
+
+      expect(manager.completeTransfer(bid!.id)).toBe(false);
+
+      spy.mockRestore();
+    });
+
+    it('should reject invalid bid', () => {
+      expect(manager.rejectBid('invalid')).toBe(false);
+    });
+
+    it('should return null for counterBid with invalid bid', () => {
+      expect(manager.counterBid('invalid', 50000000)).toBeNull();
+    });
+
+    it('should evaluate bid and return not meetMinimum for invalid bid', () => {
+      const evaluation = manager.evaluateBid('invalid');
+      expect(evaluation.meetsMinimum).toBe(false);
+      expect(evaluation.feedback).toBe('Bid not found');
+    });
+
+    it('should return null for generateCounterOffer with invalid bid', () => {
+      expect(manager.generateCounterOffer('invalid')).toBeNull();
+    });
+
+    it('should assess transfer viability with non-existent player', () => {
+      const contract = {
+        salary: 50000,
+        contractLength: 3,
+        startDate: new Date().toISOString(),
+        expiryDate: new Date(new Date().getFullYear() + 3, 11, 31).toISOString(),
+      };
+      const assessment = manager.assessTransferViability(999, 1000000, contract, 1);
+      expect(assessment.viable).toBe(false);
+      expect(assessment.reason).toBe('Player or team not found');
+    });
+
+    it('should assess transfer viability with non-existent team', () => {
+      const player = manager.getPlayers()[0];
+      const contract = {
+        salary: 50000,
+        contractLength: 3,
+        startDate: new Date().toISOString(),
+        expiryDate: new Date(new Date().getFullYear() + 3, 11, 31).toISOString(),
+      };
+      const assessment = manager.assessTransferViability(player!.id, 1000000, contract, 999);
+      expect(assessment.viable).toBe(false);
+      expect(assessment.reason).toBe('Player or team not found');
+    });
+
+    it('should return empty array for getBidsForPlayer when no bids', () => {
+      expect(manager.getBidsForPlayer(1)).toEqual([]);
+    });
+
+    it('should return empty array for getBuyerBids when no bids', () => {
+      expect(manager.getBuyerBids(1)).toEqual([]);
+    });
+
+    it('should return empty array for getSellerBids when no bids', () => {
+      expect(manager.getSellerBids(1)).toEqual([]);
+    });
+
+    it('should return null for getPlayerWithListing for non-listed player', () => {
+      expect(manager.getPlayerWithListing(999)).toBeNull();
+    });
+
+    it('should reinitialize AI after updateData', () => {
+      const newPlayers = [createTestPlayer(10, 1), createTestPlayer(11, 2)];
+      const newTeams = [createTestTeam(10), createTestTeam(11)];
+      manager.updateData(newPlayers, newTeams, competitions);
+      // Verify AI map contains entries for new teams
+      expect((manager as any).transferAIs.has(10)).toBe(true);
+      expect((manager as any).transferAIs.has(11)).toBe(true);
+    });
+  });
 });

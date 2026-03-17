@@ -330,11 +330,33 @@ export class TransferAI {
       forward: 5,
     };
 
+    // Count-based surplus: positions exceeding target
     for (const position of squad) {
       const posCategory = this.getPositionCategory(position.position);
       if ((positionCounts[posCategory] || 0) > (targetCounts[posCategory] || 0)) {
         surplus.push(position);
         positionCounts[posCategory]--;
+      }
+    }
+
+    // Quality-based surplus: in positions with depth (≥3 players), list low-rated or aging low-performers
+    for (const player of squad) {
+      if (surplus.includes(player)) continue; // already marked
+
+      const posCategory = this.getPositionCategory(player.position);
+      const playersInPosition = squad.filter(
+        (p) => this.getPositionCategory(p.position) === posCategory
+      );
+
+      // Only consider positions with sufficient depth to afford removal
+      if (playersInPosition.length >= 3) {
+        const age = this.calculateAge(player.dateOfBirth);
+        const isLowRated = player.currentRating < 65;
+        const isAgingLowPerformer = age > 30 && player.currentRating < 70;
+
+        if (isLowRated || isAgingLowPerformer) {
+          surplus.push(player);
+        }
       }
     }
 
