@@ -58,6 +58,7 @@ describe('SquadRegistrationManager', () => {
     teams = [createTestTeam(1), createTestTeam(2)];
     competitions = [createTestCompetition(1, 'league'), createTestCompetition(2, 'cup')];
 
+    // Extended player pool with enough players to meet competition minimums
     players = [
       createTestPlayer(1, 1, 'goalkeeper'),
       createTestPlayer(2, 1, 'center-back'),
@@ -70,7 +71,13 @@ describe('SquadRegistrationManager', () => {
       createTestPlayer(9, 1, 'right-winger'),
       createTestPlayer(10, 1, 'left-winger'),
       createTestPlayer(11, 1, 'striker'),
-      createTestPlayer(12, 1, 'striker'),
+      createTestPlayer(12, 1, 'central-midfielder'), // extra midfielder instead of striker
+      createTestPlayer(13, 1, 'goalkeeper'),
+      createTestPlayer(14, 1, 'center-back'),
+      createTestPlayer(15, 1, 'central-midfielder'),
+      createTestPlayer(16, 1, 'striker'), // extra forward for surplus
+      createTestPlayer(17, 1, 'left-back'),
+      createTestPlayer(18, 1, 'defensive-midfielder'),
     ];
 
     // Initialize team players
@@ -175,8 +182,8 @@ describe('SquadRegistrationManager', () => {
 
   describe('registerSquad', () => {
     it('should register a valid squad', () => {
-      const playerIds = players.slice(0, 11).map((p) => p.id);
-      const slots = players.slice(0, 11).map((p) => ({
+      const playerIds = players.slice(0, 15).map((p) => p.id);
+      const slots = players.slice(0, 15).map((p) => ({
         playerId: p.id,
         position: p.position,
         jerseyNumber: p.id,
@@ -189,13 +196,13 @@ describe('SquadRegistrationManager', () => {
       expect(result).not.toBeNull();
       expect(result!.competitionId).toBe(1);
       expect(result!.teamId).toBe(1);
-      expect(result!.players.length).toBe(11);
+      expect(result!.players.length).toBe(15);
       expect(result!.maxPlayers).toBe(25);
     });
 
     it('should fail to register invalid squad', () => {
       const playerIds = [1]; // Only 1 player
-      const slots = [];
+      const slots: SquadSlot[] = [];
 
       const result = manager.registerSquad(1, 1, '2025-2026', playerIds, slots);
       expect(result).toBeNull();
@@ -223,8 +230,9 @@ describe('SquadRegistrationManager', () => {
     let registration: any;
 
     beforeEach(() => {
-      const playerIds = players.slice(0, 11).map((p) => p.id);
-      const slots = players.slice(0, 11).map((p) => ({
+      // Register a valid squad with 16 players (includes a surplus forward)
+      const playerIds = players.slice(0, 16).map((p) => p.id);
+      const slots = players.slice(0, 16).map((p) => ({
         playerId: p.id,
         position: p.position,
         jerseyNumber: p.id,
@@ -236,38 +244,40 @@ describe('SquadRegistrationManager', () => {
     });
 
     it('should add players to existing squad', () => {
-      const newPlayers = [players[11].id, players[12].id];
+      // Players beyond the initial 16 are not in the squad
+      const newPlayers = [players[16].id, players[17].id];
       const result = manager.addPlayersToSquad(1, 1, '2025-26', newPlayers);
 
       expect(result).toBe(true);
       const updated = manager.getRegistration(1, 1, '2025-26');
-      expect(updated!.players.length).toBe(13);
+      expect(updated!.players.length).toBe(18);
     });
 
     it('should remove players from squad', () => {
-      const toRemove = [players[0].id];
+      // Remove the surplus forward (player 16 at index 15)
+      const toRemove = [players[15].id];
       const result = manager.removePlayersFromSquad(1, 1, '2025-26', toRemove);
 
       expect(result).toBe(true);
       const updated = manager.getRegistration(1, 1, '2025-26');
-      expect(updated!.players.length).toBe(10);
-      expect(updated!.players).not.toContain(players[0].id);
+      expect(updated!.players.length).toBe(15);
+      expect(updated!.players).not.toContain(players[15].id);
     });
 
     it('should not allow removal that violates minimums', () => {
-      // Start with exactly minimum squad
-      const minimalSquad = players.slice(0, 8).map((p) => p.id);
+      // Start with exactly minimal squad (15 players)
+      const minimalSquad = players.slice(0, 15).map((p) => p.id);
       manager.registerSquad(1, 1, '2025-2026', minimalSquad, []);
 
-      // Try to remove a key position
-      const result = manager.removePlayersFromSquad(1, 1, '2025-2026', [players[0].id]); // GK
+      // Try to remove a goalkeeper
+      const result = manager.removePlayersFromSquad(1, 1, '2025-2026', [players[0].id]);
       expect(result).toBe(false);
     });
   });
 
   describe('isPlayerRegistered', () => {
     beforeEach(() => {
-      const playerIds = players.slice(0, 11).map((p) => p.id);
+      const playerIds = players.slice(0, 15).map((p) => p.id);
       manager.registerSquad(1, 1, '2025-26', playerIds, []);
     });
 
@@ -286,8 +296,8 @@ describe('SquadRegistrationManager', () => {
 
   describe('getTeamRegistrations and getCompetitionRegistrations', () => {
     beforeEach(() => {
-      const playerIds1 = players.slice(0, 11).map((p) => p.id);
-      const playerIds2 = players.slice(0, 8).map((p) => p.id);
+      const playerIds1 = players.slice(0, 15).map((p) => p.id);
+      const playerIds2 = players.slice(0, 13).map((p) => p.id);
 
       manager.registerSquad(1, 1, '2025-26', playerIds1, []);
       manager.registerSquad(1, 2, '2025-26', playerIds2, []);

@@ -180,7 +180,8 @@ describe('TransferAI', () => {
     });
 
     it('calculates months until expiry', () => {
-      const months = transferAI['getMonthsUntilExpiry']('2026-06-30');
+      // Using 2027-06-30 to get ~15 months from March 2026 (current date)
+      const months = transferAI['getMonthsUntilExpiry']('2027-06-30');
       expect(months).toBeGreaterThanOrEqual(14);
       expect(months).toBeLessThanOrEqual(16);
     });

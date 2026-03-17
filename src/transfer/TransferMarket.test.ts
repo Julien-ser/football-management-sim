@@ -322,10 +322,10 @@ describe('TransferMarket', () => {
 
   describe('getBidsByBuyer and getBidsBySeller', () => {
     beforeEach(() => {
-      transferMarket.listPlayer(1, 50000000);
-      transferMarket.listPlayer(2, 30000000);
-      transferMarket.placeBid(1, 2, 45000000);
-      transferMarket.placeBid(2, 1, 25000000);
+      transferMarket.listPlayer(1, 50000000); // Team1 sells player1
+      transferMarket.listPlayer(5, 30000000); // Team3 sells player5
+      transferMarket.placeBid(1, 2, 45000000); // Team2 buys player1 from Team1
+      transferMarket.placeBid(5, 1, 25000000); // Team1 buys player5 from Team3
     });
 
     it('should get pending bids for buyer', () => {
